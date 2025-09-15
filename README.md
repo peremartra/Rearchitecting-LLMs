@@ -1,6 +1,13 @@
 # Rearchitecting LLMs. 
 **SurgicalOptimization for Hyper-Efficient Models**
 
+[![GitHub stars](https://img.shields.io/github/stars/peremartra/Rearchitecting-LLMs?style=social)](https://github.com/peremartra/Rearchitecting-LLMs/stargazers)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![optiPfair PyPI - Downloads](https://img.shields.io/pypi/dm/optipfair)](https://pypi.org/project/optipfair/)
+
+---
+
 Are you using LLMs, or are you deciding how they should work? That's the difference between a user and an architect.
 In this repository, you'll learn to go beyond using APIs or Frameworks; you'll learn to redesign the core of language models to make them faster, cheaper, and, above all, smarter for your specific use case.
 
