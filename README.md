@@ -4,7 +4,9 @@
 [![GitHub stars](https://img.shields.io/github/stars/peremartra/Rearchitecting-LLMs?style=social)](https://github.com/peremartra/Rearchitecting-LLMs/stargazers)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![optiPfair PyPI - Downloads](https://img.shields.io/pypi/dm/optipfair)](https://pypi.org/project/optipfair/)
+[![optiPfair Downloads](https://img.shields.io/pypi/dm/optipfair?label=optiPfair%20downloads)](https://pypi.org/project/optipfair/)
+
+
 
 ---
 
