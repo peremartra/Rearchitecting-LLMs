@@ -21,7 +21,7 @@ Ainslie, J., Lee-Thorp, J., de Jong, M., Zemlyanskiy, Y., Lebrón, F., & Sanghai
 * Introduces GQA, also from Google. Much more modern, from 2023. In the chapter we study it with Llama, the architecture that popularized it. 
 
 Shazeer, N. (2020). GLU Variants Improve Transformer. http://arxiv.org/abs/2002.05202
-Comparando diferentes GLU. Introduce SwiGLU, la variante que usan Llama, Gemma y la mayoría de los modelos modernos.
+* Comparing different GLUs. Introduces SwiGLU, the variant used by Llama, Gemma and most modern models.
 
 Martra, P. (2024). EXPLORING GLU EXPANSION RATIOS: STRUCTURED PRUNING IN LLAMA-3.2 MODELS. https://doi.org/https://doi.org/10.31219/osf.io/qgxea
-Comparing different GLUs. Introduces SwiGLU, the variant used by Llama, Gemma and most modern models.
+* Comparing different GLUs. Introduces SwiGLU, the variant used by Llama, Gemma and most modern models.
