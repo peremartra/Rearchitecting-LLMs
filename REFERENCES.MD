@@ -10,7 +10,7 @@ Sreenivas, S. T., Muralidharan, S., Joshi, R., Chochowski, M., Mahabaleshwarkar,
 Kim, B.-K., Kim, G., Kim, T.-H., Castells, T., Choi, S., Shin, J., & Song, H.-K. (2024). Shortened LLaMA: Depth Pruning for Large Language Models with Comparison of Retraining Methods. http://arxiv.org/abs/2402.02834
 * Although it's an introductory chapter to the depth pruning technique, part of the explanations and methodology are based on the paper's findings.
 
-# Chapter 3: Dissecting modern transformers. 
+## Chapter 3: Dissecting modern transformers. 
 Tyukin, G., Dovonon, G. J.-S., Kaddour, J., & Minervini, P. (2024). Attention Is All You Need But You Don’t Need All Of It For Inference of Large Language Models. http://arxiv.org/abs/2407.15516
 * The original paper. It introduced the Transformer architecture and the self-attention mechanism.
 
