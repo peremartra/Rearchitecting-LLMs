@@ -17,6 +17,30 @@ You'll get to control what happens inside a model to the point where you'll be a
 
 This project is an advanced spin-off of the popular [Large Language Model Notebooks Course](https://github.com/peremartra/Large-Language-Model-Notebooks-Course) (+1800 stars), focused exclusively on optimization and re-architecture techniques that will allow you to go beyond traditional fine-tuning.
 
+## 🧠 Your Interactive Technical Companion: NotebookLM Space
+
+[![Interact with NotebookLM](https://img.shields.io/badge/🤖_NotebookLM-Ask_Anything-FF6B35?style=for-the-badge&logo=google&logoColor=white)](https://notebooklm.google.com/notebook/a059766a-14bf-4d75-8840-b05a79be680e)
+
+**Start experimenting interactively.**
+
+This NotebookLM space contains all the research papers, chapter notebooks, and optiPfair guides in a conversational format. Think of it as your AI-powered technical assistant for the book, which helps you to become an LLM architect. 
+
+**What you can do:**
+- **Ask specific questions**: "How does depth pruning work?" or "How many layers can I remove from a 70B model?"
+- **Get code snippets**: "Show me the code to reduce the GLU expansion of Llama3"
+- **Explore techniques**: Query any pruning, distillation, or optimization method
+- **Troubleshoot**: Get help understanding implementation details from the notebooks
+
+Perfect for:
+- Quick reference while coding
+- Understanding paper implementations
+- Exploring techniques before diving into chapters
+- Clarifying concepts on the go
+
+**[→ Launch NotebookLM Space](https://notebooklm.google.com/notebook/a059766a-14bf-4d75-8840-b05a79be680e)**
+
+> 💡 **Pro tip**: Use NotebookLM for quick queries and experimentation. For structured, in-depth learning, the book remains your best companion.
+
 ## The Journey: Your Path from User to LLM Architect
 Being an LLM architect is a process. This repository is structured to guide you through the journey, from fundamentals to advanced techniques.
 
