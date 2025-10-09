@@ -25,3 +25,11 @@ Shazeer, N. (2020). GLU Variants Improve Transformer. http://arxiv.org/abs/2002.
 
 Martra, P. (2024). EXPLORING GLU EXPANSION RATIOS: STRUCTURED PRUNING IN LLAMA-3.2 MODELS. https://doi.org/https://doi.org/10.31219/osf.io/qgxea
 * Study the effect of pruning on the GLU structure of Llama-3.2 models.
+
+## Chapter 4: Building smaller and faster LLMs with depth pruning
+Men, X., Xu, M., Zhang, Q., Wang, B., Lin, H., Lu, Y., Han, X., & Chen, W. (2024). ShortGPT: Layers in Large Language Models are More Redundant Than You Expect. http://arxiv.org/abs/2403.03853
+* Use cosine similarity to decide which Transformer blocks to remove. 
+
+Kim, B.-K., Kim, G., Kim, T.-H., Castells, T., Choi, S., Shin, J., & Song, H.-K. (2024). Shortened LLaMA: Depth Pruning for Large Language Models with Comparison of Retraining Methods. http://arxiv.org/abs/2402.02834
+
+* Justify the benefits of depth pruning over width pruning as explained in section 4.1, especially in memory-bound scenarios.
