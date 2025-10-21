@@ -36,7 +36,7 @@ Kim, B.-K., Kim, G., Kim, T.-H., Castells, T., Choi, S., Shin, J., & Song, H.-K.
 
 ## Chapter 5: **Width Pruning in Modern Architectures**
 Guo, Z., Kamigaito, H., & Wanatnabe, T. (2024). **Dependency-Aware Semi-Structured Sparsity of GLU Variants in Large Language Models.** http://arxiv.org/abs/2405.01943
-* Utiliza la importancia de activaciones para realizar sparsity pruning. El sparsity pruning se pierde al realizar fine-tuning y necesita que la libreria de inferencia lo soporte para obtener los beneficios de reduccion de memoria y mejor rendimiento en inferencia. 
+* Use activation importance for sparsity pruning. Sparsity pruning is lost when doing fine-tuning and requires the inference library to support it to get the benefits of reduced memory and better inference performance. 
 
 Martra, P. (2024). **Exploring GLU expansion ratios: Structured pruning in LLama-3.2 Models.** https://doi.org/https://doi.org/10.31219/osf.io/qgxea
 * Study the effect of pruning on the GLU structure of Llama-3.2 models.
