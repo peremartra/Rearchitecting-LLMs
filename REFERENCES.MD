@@ -23,13 +23,22 @@ Ainslie, J., Lee-Thorp, J., de Jong, M., Zemlyanskiy, Y., Lebrón, F., & Sanghai
 Shazeer, N. (2020). **GLU Variants Improve Transformer.** http://arxiv.org/abs/2002.05202
 * Comparing different GLUs. Introduces SwiGLU, the variant used by Llama, Gemma and most modern models.
 
-Martra, P. (2024). **EXPLORING GLU EXPANSION RATIOS: STRUCTURED PRUNING IN LLAMA-3.2 MODELS.** https://doi.org/https://doi.org/10.31219/osf.io/qgxea
+Martra, P. (2024). **Exploring GLU expansion ratios: Structured pruning in LLama-3.2 Models.** https://doi.org/https://doi.org/10.31219/osf.io/qgxea
 * Study the effect of pruning on the GLU structure of Llama-3.2 models.
 
 ## Chapter 4: **Building smaller and faster LLMs with depth pruning**
-Men, X., Xu, M., Zhang, Q., Wang, B., Lin, H., Lu, Y., Han, X., & Chen, W. (2024). ShortGPT: Layers in Large Language Models are More Redundant Than You Expect. http://arxiv.org/abs/2403.03853
+Men, X., Xu, M., Zhang, Q., Wang, B., Lin, H., Lu, Y., Han, X., & Chen, W. (2024). **ShortGPT: Layers in Large Language Models are More Redundant Than You Expect.** http://arxiv.org/abs/2403.03853
 * Use cosine similarity to decide which Transformer blocks to remove. 
 
 Kim, B.-K., Kim, G., Kim, T.-H., Castells, T., Choi, S., Shin, J., & Song, H.-K. (2024). **Shortened LLaMA: Depth Pruning for Large Language Models with Comparison of Retraining Methods.** http://arxiv.org/abs/2402.02834
 
 * Justify the benefits of depth pruning over width pruning as explained in section 4.1, especially in memory-bound scenarios.
+
+## Chapter 5: **Width Pruning in Modern Architectures**
+Guo, Z., Kamigaito, H., & Wanatnabe, T. (2024). **Dependency-Aware Semi-Structured Sparsity of GLU Variants in Large Language Models.** http://arxiv.org/abs/2405.01943
+* Utiliza la importancia de activaciones para realizar sparsity pruning. El sparsity pruning se pierde al realizar fine-tuning y necesita que la libreria de inferencia lo soporte para obtener los beneficios de reduccion de memoria y mejor rendimiento en inferencia. 
+
+Martra, P. (2024). **Exploring GLU expansion ratios: Structured pruning in LLama-3.2 Models.** https://doi.org/https://doi.org/10.31219/osf.io/qgxea
+* Study the effect of pruning on the GLU structure of Llama-3.2 models.
+
+
