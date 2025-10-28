@@ -5,9 +5,6 @@
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![optiPfair Downloads](https://img.shields.io/pypi/dm/optipfair?label=optiPfair%20downloads)](https://pypi.org/project/optipfair/)
-
-
-
 ---
 
 Are you using LLMs, or are you deciding how they should work? That's the difference between a user and an architect.
@@ -59,6 +56,13 @@ Being an LLM architect is a process. This repository is structured to guide you 
 * Your Mission: Understand its internal structure, how information flows, and where its capabilities truly reside. You'll start thinking in terms of layers, blocks, modules, and neurons, not just prompts and responses.
 * Key Resource: [CH03/CH03_NB01_Model_structures.ipynb](https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH03/CH03_NB01_Model_structures.ipynb)
 
+🆕 **Data-Driven Depth Pruning** 🆕
+* The Challenge: Move beyond random layer removal to intelligent, data-driven pruning decisions.
+* Your Mission: Master PyTorch hooks to analyze layer importance using cosine similarity. Learn to identify which layers contribute most to your specific task and create specialized models optimized for different data types (complex vs. simple text).
+* What You'll Build: Two optimized models—one for complex text (WikiText) and one for simple text (SMS)—each achieving 11-13% speedup while maintaining task-specific performance.
+* Key Insight: Layer importance varies dramatically by task complexity. What's essential for deep reasoning may be dead weight for simple classification.
+* Key Resource: [CH04/CH04_NB01_Cosine_Similarity.ipynb](https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH04/CH04_NB01_Cosine_Similarity.ipynb)
+
 **Diving deeper into structural optimization.**
 * The Challenge: Adapt the model's structure to its mission and the data it will use.
 * Your Mission: Implement depth and width pruning techniques on modern architectures.
@@ -89,6 +93,10 @@ Tools you'll master:
 * **Activation Analysis**: The foundation for understanding internal behavior and applying Fair Pruning.
 
 ## Start Building
-The journey begins with the first step. We recommend you start with the notebooks from Chapter 2 and 3 to build a solid foundation before tackling the more advanced techniques.
+The journey begins with the first step. We recommend you start with the notebooks from Chapter 2, 3, and 4 to build a solid foundation before tackling the more advanced techniques:
+
+1. **Chapter 2**: Learn the basics of depth pruning and knowledge recovery
+2. **Chapter 3**: Understand modern transformer architectures (Llama, Gemma, Qwen)
+3. **Chapter 4**: Master data-driven layer selection using cosine similarity 🆕
 
 Stop being a mere user. It's time to become an architect.
