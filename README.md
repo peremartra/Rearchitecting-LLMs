@@ -100,3 +100,12 @@ The journey begins with the first step. We recommend you start with the notebook
 3. **Chapter 4**: Master data-driven layer selection using cosine similarity 🆕
 
 Stop being a mere user. It's time to become an architect.
+
+## 🌟 Support This Project
+
+If you find these techniques useful, consider:
+- ⭐ Starring this repo to stay updated
+- 🔄 Sharing it with your team
+- 💬 Opening Discussions with your questions
+
+Every star helps us reach more LLM engineers who can benefit from this work.
