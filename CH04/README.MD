@@ -18,4 +18,4 @@ This chapter explores, at first, static methods to select the layers to remove, 
 
     **Key Insight**: Layers that contribute little to data transformation (high cosine similarity between input/output) are prime candidates for removal, but their importance varies dramatically depending on the task complexity.
 
-By the end of this chapter, you'll understand that depth pruning is not just about removing layers from the end—it's about analyzing your model's behavior with your specific data to identify which layers you can safely remove while maintaining performance for your use case.
+By the end of this chapter, you'll understand that depth pruning is not just about removing layers from the end. It's about analyzing your model's behavior with your specific data to identify which layers you can safely remove while maintaining performance for your use case.
