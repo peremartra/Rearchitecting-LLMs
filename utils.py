@@ -29,7 +29,9 @@ def model_evaluation(model_obj, tokenizer, tasks, device='cuda', limit=None):
         limit (int): The number of samples per task.
     """
     print(f"Starting lm-eval on model '{model_obj.config._name_or_path}' for tasks: {tasks}")
-
+    from lm_eval import evaluator
+    from lm_eval.models.huggingface import HFLM
+    
     # Wrap the local model object and tokenizer for lm-eval
     model_wrapper = HFLM(
         pretrained=model_obj,
