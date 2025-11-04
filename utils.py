@@ -4,6 +4,7 @@ try:
     import optipfair
     import torch
     import json
+    import gc
     
 except ImportError as e:
     raise ImportError(
