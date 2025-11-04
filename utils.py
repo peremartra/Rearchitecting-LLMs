@@ -16,7 +16,7 @@ def clear_gpu_cache():
         torch.cuda.synchronize()
     gc.collect()
 
-def model_evaluation(model_obj, tokenizer, tasks, limit=None):
+def model_evaluation(model_obj, tokenizer, tasks, device='cuda', limit=None):
     """
     Runs lm-eval on a PyTorch model object already in memory.
 
@@ -113,7 +113,7 @@ def evaluate_metrics(model, dataloader, device='cuda'):
         'perplexity': perplexity
     }
 
-def generate_text(model, tokenizer, prompt: str, max_new_tokens: int = 50) -> str:
+def generate_text(model, tokenizer, prompt: str, device='cuda', max_new_tokens: int = 50) -> str:
     """Generate text with the model"""
     inputs = tokenizer(prompt, return_tensors='pt').to(device)
     with torch.no_grad():
