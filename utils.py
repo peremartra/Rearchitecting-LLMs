@@ -9,6 +9,13 @@ except ImportError as e:
         "  pip install optipfair lm-eval transformers torch langdetect"
     )
 
+def clear_gpu_cache():
+    """Clear GPU cache completely"""
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+        torch.cuda.synchronize()
+    gc.collect()
+
 def model_evaluation(model_obj, tokenizer, tasks, limit=None):
     """
     Runs lm-eval on a PyTorch model object already in memory.
