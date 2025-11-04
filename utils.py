@@ -3,6 +3,7 @@ try:
     import transformers
     import optipfair
     import torch
+    import json
     
 except ImportError as e:
     raise ImportError(
