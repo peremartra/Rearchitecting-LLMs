@@ -5,6 +5,7 @@ try:
     import torch
     import json
     import gc
+    import langdetect
     
 except ImportError as e:
     raise ImportError(
