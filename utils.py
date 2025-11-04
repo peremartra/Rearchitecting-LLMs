@@ -28,10 +28,26 @@ def model_evaluation(model_obj, tokenizer, tasks, limit=None):
         device=str(device)
     )
 
+    for task in tasks:
+        if isinstance(task, dict):
+            task_name = task["name"]
+            task_names.append(task_name)
+            task_fewshot_map[task_name] = task["num_fewshot"]
+        else:
+            # Backward compatibility: simple string list
+            task_names.append(task)
+            task_fewshot_map[task] = 0
+
+    print(f"\n{'='*70}")
+    print(f"Tasks: {task_names} {limit_str}")
+    print(f"Few-shot config: {task_fewshot_map}")
+    print(f"{'='*70}\n")
+
+    fewshot_value = list(task_fewshot_map.values())[0]
     results = evaluator.simple_evaluate(
         model=model_wrapper,
         tasks=tasks,
-        num_fewshot=0,
+        num_fewshot=fewshot_value,
         limit=limit,
         device=str(device),
     )
@@ -89,3 +105,20 @@ def evaluate_metrics(model, dataloader, device='cuda'):
         'loss': avg_loss,
         'perplexity': perplexity
     }
+
+def generate_text(model, tokenizer, prompt: str, max_new_tokens: int = MAX_NEW_TOKENS) -> str:
+    """Generate text with the model"""
+    inputs = tokenizer(prompt, return_tensors='pt').to(device)
+    with torch.no_grad():
+        outputs = model.generate(
+            inputs['input_ids'],
+            attention_mask=inputs['attention_mask'],
+            max_new_tokens=max_new_tokens,
+            num_return_sequences=1,
+            pad_token_id=tokenizer.pad_token_id,
+            do_sample=False,
+            num_beams=3,
+            early_stopping=True,
+            no_repeat_ngram_size=2
+        )
+    return tokenizer.decode(outputs[0], skip_special_tokens=True)
