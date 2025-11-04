@@ -57,11 +57,12 @@ def model_evaluation(model_obj, tokenizer, tasks, device='cuda', limit=None):
     print(f"Tasks: {task_names} {limit_str}")
     print(f"Few-shot config: {task_fewshot_map}")
     print(f"{'='*70}\n")
+    
 
     fewshot_value = list(task_fewshot_map.values())[0]
     results = evaluator.simple_evaluate(
         model=model_wrapper,
-        tasks=tasks,
+        tasks=task_names,
         num_fewshot=fewshot_value,
         limit=limit,
         device=str(device),
