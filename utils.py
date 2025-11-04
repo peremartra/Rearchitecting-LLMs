@@ -42,6 +42,7 @@ def model_evaluation(model_obj, tokenizer, tasks, device='cuda', limit=None):
     # Parse tasks to handle both dict and string formats
     task_names = []
     task_fewshot_map = {}
+    limit_str = f"(limit={limit})" if limit else "(full dataset)"
     for task in tasks:
         if isinstance(task, dict):
             task_name = task["name"]
