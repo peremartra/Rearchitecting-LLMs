@@ -38,7 +38,10 @@ def model_evaluation(model_obj, tokenizer, tasks, device='cuda', limit=None):
         tokenizer=tokenizer,
         device=str(device)
     )
-
+    
+    # Parse tasks to handle both dict and string formats
+    task_names = []
+    task_fewshot_map = {}
     for task in tasks:
         if isinstance(task, dict):
             task_name = task["name"]
