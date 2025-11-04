@@ -2,6 +2,8 @@ try:
     import lm_eval
     import transformers
     import optipfair
+    import torch
+    
 except ImportError as e:
     raise ImportError(
         f"Missing required library: {e.name}\n"
