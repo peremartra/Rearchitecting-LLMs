@@ -14,7 +14,7 @@ The process is divided into two phases, each implemented in its own notebook:
     2.  **Apply Depth Pruning**: We remove two complete layers from the model, reducing its size and, therefore, increasing its inference speed.
     3.  **Evaluate the Impact**: We quantify the performance degradation of the model after pruning to understand the cost of the optimization.
 
-* **[CH02\_NB02\_Knowledge\_Recovery.ipynb](https://www.google.com/search?q=https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH02/CH02_NB02_Knowledge_Recovery.ipynb)**: In this second part, we complete the cycle by "healing" the pruned model.
+* **[CH02\_NB02\_Knowledge\_Recovery.ipynb](https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH02/CH02_NB02_Knowledge_Recovery.ipynb)**: In this second part, we complete the cycle by "healing" the pruned model.
 
     1.  **Prepare the Models**: We load the original model as the "teacher" and the pruned model as the "student".
     2.  **Apply Knowledge Distillation**: We train the student model to imitate the "reasoning process" of the teacher model, transferring the lost knowledge.
