@@ -75,17 +75,26 @@ def model_evaluation(model_obj, tokenizer, tasks, device='cuda', limit=None, bat
     # Format results for clean display
     formatted_results = {}
     for task_name, res in results["results"].items():
-        # Look for accuracy ('acc') first, then perplexity ('ppl')
-        if 'acc,none' in res:
-            metric_val = res.get('acc,none', 0)
-        elif 'ppl,none' in res:
-             metric_val = res.get('ppl,none', 0)
+        # Extract relevant metrics based on task type
+        if 'perplexity,none' in res:
+            # Perplexity tasks (wikitext, lambada)
+            formatted_results[task_name] = {
+                'perplexity': f"{res.get('perplexity,none', 0):.2f}",
+                'word_perplexity': f"{res.get('word_perplexity,none', 0):.2f}",
+                'bits_per_byte': f"{res.get('bits_per_byte,none', 0):.4f}"
+            }
+        elif 'acc,none' in res:
+            # Accuracy tasks (boolq, arc, hellaswag, etc.)
+            formatted_results[task_name] = {
+                'accuracy': f"{res.get('acc,none', 0):.4f}",
+                'acc_norm': f"{res.get('acc_norm,none', 0):.4f}" if 'acc_norm,none' in res else "N/A"
+            }
         else:
-            metric_val = 0 # Fallback
-
-        formatted_results[task_name] = f"{metric_val:.4f}"
-
-    print(json.dumps(formatted_results, indent=2))
+            # Fallback: store all numeric metrics
+            formatted_results[task_name] = {
+                k: f"{v:.4f}" for k, v in res.items() 
+                if isinstance(v, (int, float))
+            }
     return formatted_results
 
 def evaluate_metrics(model, dataloader, device='cuda'):
