@@ -81,7 +81,8 @@ def model_evaluation(model_obj, tokenizer, tasks, device='cuda', limit=None, bat
             formatted_results[task_name] = {
                 'perplexity': f"{res.get('perplexity,none', 0):.2f}",
                 'word_perplexity': f"{res.get('word_perplexity,none', 0):.2f}",
-                'bits_per_byte': f"{res.get('bits_per_byte,none', 0):.4f}"
+                'bits_per_byte': f"{res.get('bits_per_byte,none', 0):.4f}", 
+                'accuracy': f"{res.get('acc,none', 0):.4f}",
             }
         elif 'acc,none' in res:
             # Accuracy tasks (boolq, arc, hellaswag, etc.)
