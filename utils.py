@@ -21,7 +21,7 @@ def clear_gpu_cache():
         torch.cuda.synchronize()
     gc.collect()
 
-def model_evaluation(model_obj, tokenizer, tasks, device='cuda', limit=None):
+def model_evaluation(model_obj, tokenizer, tasks, device='cuda', limit=None, batch_size=4):
     """
     Runs lm-eval on a PyTorch model object already in memory.
 
@@ -69,6 +69,7 @@ def model_evaluation(model_obj, tokenizer, tasks, device='cuda', limit=None):
         num_fewshot=fewshot_value,
         limit=limit,
         device=str(device),
+        batch_size=batch_size, 
     )
 
     # Format results for clean display
