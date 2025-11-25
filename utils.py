@@ -6,6 +6,7 @@ try:
     import json
     import gc
     import langdetect
+    from tqdm import tqdm
     
 except ImportError as e:
     raise ImportError(
