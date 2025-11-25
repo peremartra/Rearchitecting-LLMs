@@ -7,7 +7,7 @@ try:
     import gc
     import langdetect
     from tqdm import tqdm
-    
+    import numpy as np 
 except ImportError as e:
     raise ImportError(
         f"Missing required library: {e.name}\n"
