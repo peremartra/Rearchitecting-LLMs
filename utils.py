@@ -22,6 +22,144 @@ def clear_gpu_cache():
         torch.cuda.synchronize()
     gc.collect()
 
+def measure_detailed_performance(model, tokenizer, data_source, num_runs=3, max_new_tokens=50, max_samples=None):
+    """
+    Measures inference performance metrics with scientific rigor.
+    
+    Adapted to use robust timing and warmup logic while maintaining 
+    the original interface for DataLoaders.
+
+    Args:
+        model: Model to evaluate
+        tokenizer: Tokenizer
+        data_source: DataLoader to sample from (expects batch['input_ids'])
+        num_runs: Number of runs per sample for averaging (Latency focus)
+        max_new_tokens: Tokens to generate per sample
+        max_samples: Limit number of samples (None = all available)
+
+    Returns:
+        dict with timing statistics:
+            - avg_latency_sec: Mean end-to-end latency across all measurements 
+              (num_samples × num_runs total measurements)
+            - std_latency_sec: Standard deviation of latency
+            - avg_tokens_per_generation: Mean tokens generated per generation
+            - throughput_tokens_per_sec: Overall throughput (total_tokens / total_time)
+            - num_unique_samples: Number of unique input samples tested
+            - num_runs_per_sample: Number of runs performed per sample
+            - total_measurements: Total number of generation runs performed
+            - total_tokens: Total tokens generated across all runs
+    """
+    device = model.device
+    model.eval()
+    
+    # --- 1. DATA PREPARATION (Maintains original logic) ---
+    samples = []
+    # Flatten the data_source to get the list of input tensors
+    for batch in data_source:
+        current_batch_input_ids = batch['input_ids']
+        for i in range(len(current_batch_input_ids)):
+            samples.append(current_batch_input_ids[i])
+            if max_samples and len(samples) >= max_samples:
+                break
+        if max_samples and len(samples) >= max_samples:
+            break
+
+    if max_samples:
+        samples = samples[:max_samples]
+
+    # Edge case: No samples available
+    if not samples:
+        print("⚠️  No samples to measure")
+        return {
+            'avg_latency_sec': 0.0,
+            'std_latency_sec': 0.0,
+            'avg_tokens_per_generation': 0.0,
+            'throughput_tokens_per_sec': 0.0,
+            'num_unique_samples': 0,
+            'num_runs_per_sample': num_runs,
+            'total_measurements': 0,
+            'total_tokens': 0
+        }
+
+    print(f"Measuring performance on {len(samples)} samples ({num_runs} runs each)...")
+
+    # --- 2. GPU WARM-UP ---
+    # Critical to "warm up" the GPU to load kernels and allocators
+    print("   🔥 Performing GPU Warm-up...")
+    warmup_input = samples[0].unsqueeze(0).to(device)
+    with torch.no_grad():
+        # Perform 2 warmup passes (without measuring)
+        for _ in range(2):
+            model.generate(
+                warmup_input,
+                max_new_tokens=max_new_tokens,  # Use same length as test
+                do_sample=False,
+                pad_token_id=tokenizer.pad_token_id
+            )
+    if torch.cuda.is_available():
+        torch.cuda.synchronize()  # Ensure warmup completed
+
+    # --- 3. MEASUREMENT LOOP ---
+    latencies = []
+    total_tokens_generated = 0
+    total_time_accumulated = 0
+
+    with torch.no_grad():
+        for sample in tqdm(samples, desc="Performance test"):
+            input_ids = sample.unsqueeze(0).to(device)
+
+            for _ in range(num_runs):
+                # Synchronize before starting the clock (Vital for precision)
+                if torch.cuda.is_available():
+                    torch.cuda.synchronize()
+                
+                start_time = time.time()
+                
+                outputs = model.generate(
+                    input_ids,
+                    max_new_tokens=max_new_tokens,
+                    do_sample=False,
+                    pad_token_id=tokenizer.pad_token_id
+                )
+                
+                # Synchronize before stopping the clock
+                if torch.cuda.is_available():
+                    torch.cuda.synchronize()
+                end_time = time.time()
+
+                # Calculations
+                elapsed = end_time - start_time
+                num_new_tokens = outputs.shape[1] - input_ids.shape[1]
+
+                # Store raw metrics
+                latencies.append(elapsed)
+                total_tokens_generated += num_new_tokens
+                total_time_accumulated += elapsed
+
+    # --- 4. METRICS CALCULATION (Robust logic) ---
+    # Average Latency (End-to-End Latency)
+    avg_latency = np.mean(latencies)
+    std_latency = np.std(latencies)
+    
+    # Average tokens per generation (FIX: removed redundant np.mean)
+    avg_tokens_per_gen = total_tokens_generated / len(latencies) if latencies else 0.0
+
+    # Tokens per Second (Global Throughput)
+    # Calculated as Total Tokens / Total Time (More stable than averaging ratios)
+    throughput = total_tokens_generated / total_time_accumulated if total_time_accumulated > 0 else 0.0
+
+    # --- 5. RETURN WITH EXPLICIT TYPES ---
+    return {
+        'avg_latency_sec': float(avg_latency),
+        'std_latency_sec': float(std_latency),
+        'avg_tokens_per_generation': float(avg_tokens_per_gen),
+        'throughput_tokens_per_sec': float(throughput),
+        'num_unique_samples': int(len(samples)),
+        'num_runs_per_sample': int(num_runs),
+        'total_measurements': int(len(latencies)),
+        'total_tokens': int(total_tokens_generated)
+    }
+
 def model_evaluation(model_obj, tokenizer, tasks, device='cuda', limit=None, batch_size=4):
     """
     Runs lm-eval on a PyTorch model object already in memory.
