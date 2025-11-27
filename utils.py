@@ -6,6 +6,7 @@ try:
     import json
     import gc
     import langdetect
+    import time
     from tqdm import tqdm
     import numpy as np 
 except ImportError as e:
