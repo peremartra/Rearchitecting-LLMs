@@ -9,6 +9,7 @@ try:
     import time
     from tqdm import tqdm
     import numpy as np 
+    import codecarbon
 except ImportError as e:
     raise ImportError(
         f"Missing required library: {e.name}\n"
@@ -292,3 +293,257 @@ def generate_text(model, tokenizer, prompt: str, device='cuda', max_new_tokens: 
             no_repeat_ngram_size=2
         )
     return tokenizer.decode(outputs[0], skip_special_tokens=True)
+    
+def calibrate_idle_power(device="cuda", duration_seconds=30, verbose=True):
+    """
+    Measure GPU idle power consumption to establish baseline.
+    
+    This should be run ONCE at the start of the notebook, before any model loading.
+    
+    Args:
+        device (str): Device to calibrate ("cuda" or "cpu")
+        duration_seconds (int): How long to measure (30s recommended)
+        verbose (bool): Print progress messages
+    
+    Returns:
+        dict: {
+            "idle_power_watts": float,
+            "idle_energy_kwh": float,
+            "measurement_duration_s": float,
+            "gpu_temp_celsius": float,
+            "gpu_name": str,
+            "timestamp": str
+        }
+    """
+    import torch
+    import time
+    from codecarbon import EmissionsTracker
+    from datetime import datetime
+    
+    if verbose:
+        print(f"🔋 Starting idle power calibration ({duration_seconds}s)...")
+        print(f"   Clearing GPU cache...")
+    
+    # Clear GPU to true idle state
+    if device == "cuda" and torch.cuda.is_available():
+        torch.cuda.empty_cache()
+        torch.cuda.synchronize()
+    
+    # Initialize tracker
+    tracker = EmissionsTracker(
+        project_name="idle_calibration",
+        measure_power_secs=1,  # Sample every second
+        save_to_file=False,
+        log_level="error"  # Suppress warnings
+    )
+    
+    # Measure idle consumption
+    tracker.start()
+    start_time = time.time()
+    
+    # Just wait (GPU should be completely idle)
+    if verbose:
+        print(f"   Measuring idle power for {duration_seconds}s...")
+    time.sleep(duration_seconds)
+    
+    emissions_kwh = tracker.stop()
+    actual_duration = time.time() - start_time
+    
+    # Calculate average power
+    idle_power_watts = (emissions_kwh * 1000) / (actual_duration / 3600)  # kWh -> W
+    
+    # Capture GPU state
+    gpu_info = {}
+    if device == "cuda" and torch.cuda.is_available():
+        gpu_info = {
+            "gpu_name": torch.cuda.get_device_name(0),
+            "gpu_temp_celsius": torch.cuda.temperature() if hasattr(torch.cuda, 'temperature') else None,
+            "gpu_power_limit_w": torch.cuda.get_device_properties(0).total_memory / (1024**3) * 10  # Rough estimate
+        }
+    
+    calibration_result = {
+        "idle_power_watts": idle_power_watts,
+        "idle_energy_kwh": emissions_kwh,
+        "measurement_duration_s": actual_duration,
+        "timestamp": datetime.now().isoformat(),
+        **gpu_info
+    }
+    
+    if verbose:
+        print(f"✅ Calibration complete!")
+        print(f"   Idle Power: {idle_power_watts:.2f} W")
+        print(f"   Idle Energy (30s): {emissions_kwh:.6f} kWh")
+        if gpu_info.get("gpu_temp_celsius"):
+            print(f"   GPU Temperature: {gpu_info['gpu_temp_celsius']:.1f}°C")
+    
+    return calibration_result
+
+def measure_energy_consumption(model, tokenizer, data_source, idle_power_watts=None, num_runs=1, max_new_tokens=50, max_samples=None):
+    """
+    Measures the net energy consumption of a model removing idle power.
+    
+    Mirrors the structure of 'measure_detailed_performance' for consistency
+    in evaluation pipelines.
+
+    Args:
+        model: PyTorch model to evaluate.
+        tokenizer: Tokenizer.
+        data_source: DataLoader to sample from (expects batch['input_ids']).
+        idle_power_watts: Idle GPU power in Watts for net correction.
+            - If None: auto-calibrates (adds ~30s)
+            - If 0: no idle correction applied
+            - If float > 0: uses provided value
+        num_runs: Number of runs per sample (typically 1 for energy measurement).
+        max_new_tokens: Tokens to generate per sample.
+        max_samples: Limit number of samples (None = all available).
+
+    Returns:
+        dict: Energy metrics (kWh, Joules, Joules/Token, CO2).
+            Note: CO2 is calculated on raw energy (before idle correction)
+            as CodeCarbon doesn't support post-hoc adjustments.
+    """
+    import time
+    import torch
+    from tqdm import tqdm
+    from codecarbon import EmissionsTracker
+    
+    device = model.device
+    model.eval()
+
+    # --- 1. DATA PREPARATION (Identical to performance function) ---
+    samples = []
+    # Flatten the data_source to get the list of input tensors
+    for batch in data_source:
+        current_batch_input_ids = batch['input_ids']
+        for i in range(len(current_batch_input_ids)):
+            samples.append(current_batch_input_ids[i])
+            if max_samples and len(samples) >= max_samples:
+                break
+        if max_samples and len(samples) >= max_samples:
+            break
+            
+    if max_samples:
+        samples = samples[:max_samples]
+        
+    # Edge case: No samples available
+    if not samples:
+        print("⚠️ No samples to measure.")
+        return {
+            "duration_sec": 0.0,
+            "total_tokens": 0,
+            "num_unique_samples": 0,
+            "num_runs_per_sample": num_runs,
+            "total_measurements": 0,
+            "energy_raw_kwh": 0.0,
+            "energy_idle_correction_kwh": 0.0,
+            "energy_net_kwh": 0.0,
+            "efficiency_joules_per_token": 0.0,
+            "co2_emissions_kg": 0.0
+        }
+
+    # --- 2. AUTO-CALIBRATION (Only if idle_power_watts is None) ---
+    if idle_power_watts is None:
+        print("   ⚙️ Auto-calibrating idle power (30s)...")
+        calibration_result = calibrate_idle_power(
+            device=device, 
+            duration_seconds=30,
+            verbose=False
+        )
+        idle_power_watts = calibration_result["idle_power_watts"]
+        print(f"   ✓ Measured idle power: {idle_power_watts:.2f}W")
+
+    print(f"🌍 Measuring energy on {len(samples)} samples ({num_runs} runs each)...")
+
+    # --- 3. GPU WARM-UP (Identical to performance function) ---
+    # Critical to "warm up" the GPU to load kernels and allocators
+    print("   🔥 Performing GPU Warm-up...")
+    warmup_input = samples[0].unsqueeze(0).to(device)
+    with torch.no_grad():
+        # Perform 2 warmup passes (without measuring)
+        for _ in range(2):
+            model.generate(
+                warmup_input,
+                max_new_tokens=max_new_tokens,  # Use same length as test
+                do_sample=False,
+                pad_token_id=tokenizer.pad_token_id
+            )
+    if torch.cuda.is_available():
+        torch.cuda.synchronize()  # Ensure warmup completed
+
+    # --- 4. INITIALIZE ENERGY TRACKER ---
+    # save_to_file=False keeps the environment clean for the book reader
+    tracker = EmissionsTracker(
+        project_name="manning_energy_test",
+        measure_power_secs=1,
+        save_to_file=False,
+        log_level="error"
+    )
+
+    # --- 5. MEASUREMENT LOOP (Structure mirrors performance function) ---
+    total_tokens_generated = 0
+    
+    # Start tracking before the measurement loop
+    tracker.start()
+    start_time = time.time()
+
+    try:
+        with torch.no_grad():
+            for sample in tqdm(samples, desc="Energy measurement"):
+                input_ids = sample.unsqueeze(0).to(device)
+
+                for _ in range(num_runs):
+                    # Synchronize before starting generation (Vital for precision)
+                    if torch.cuda.is_available():
+                        torch.cuda.synchronize()
+                    
+                    outputs = model.generate(
+                        input_ids,
+                        max_new_tokens=max_new_tokens,
+                        do_sample=False,
+                        pad_token_id=tokenizer.pad_token_id
+                    )
+                    
+                    # Synchronize after generation
+                    if torch.cuda.is_available():
+                        torch.cuda.synchronize()
+
+                    # Count only NEW tokens for efficiency calculation
+                    num_new_tokens = outputs.shape[1] - input_ids.shape[1]
+                    total_tokens_generated += num_new_tokens
+
+    finally:
+        # Stop tracker immediately after inference
+        emissions_raw_kwh = tracker.stop()
+
+    duration_seconds = time.time() - start_time
+
+    # --- 6. NET ENERGY CALCULATION ---
+    # We subtract the energy the GPU would have consumed at idle
+    # Formula: Net = Total - (Idle_Watts * Time_Seconds) / 3_600_000
+    
+    idle_energy_kwh = (idle_power_watts * duration_seconds) / 3_600_000
+    energy_net_kwh = max(0.0, emissions_raw_kwh - idle_energy_kwh)
+
+    # --- 7. EFFICIENCY METRICS ---
+    # Joules are better than kWh for small comparisons (1 kWh = 3.6M Joules)
+    total_joules_net = energy_net_kwh * 3_600_000
+    joules_per_token = total_joules_net / total_tokens_generated if total_tokens_generated > 0 else 0.0
+
+    # --- 8. CO2 EMISSIONS ---
+    # Note: CodeCarbon calculates this on raw energy consumption
+    # For net CO2, you would need: co2_net = co2_raw * (energy_net / energy_raw)
+    co2_raw_kg = float(tracker.final_emissions)
+    
+    # --- 9. RETURN WITH EXPLICIT TYPES (Consistent with performance function) ---
+    return {
+        "duration_sec": float(duration_seconds),
+        "total_tokens": int(total_tokens_generated),
+        "num_unique_samples": int(len(samples)),
+        "num_runs_per_sample": int(num_runs),
+        "total_measurements": int(len(samples) * num_runs),
+        "energy_raw_kwh": float(emissions_raw_kwh),
+        "energy_idle_correction_kwh": float(idle_energy_kwh),
+        "energy_net_kwh": float(energy_net_kwh),
+        "efficiency_joules_per_token": float(joules_per_token),
+        "co2_emissions_kg": co2_raw_kg
+    }
