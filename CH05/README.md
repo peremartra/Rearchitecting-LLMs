@@ -17,11 +17,10 @@ This chapter explores two fundamental strategies for deciding which neurons to r
     3.  **Expansion Reduction**: We apply this technique to `Llama-3.2-1B` to surgically reduce its MLP expansion ratio from 4x to a more efficient 2.4x.
     4.  **Trade-off Analysis**: We evaluate the resulting model and discover a fascinating *trade-off*: while general reasoning (GSM8K) degrades, the ability to follow instructions (IFEval) and truthfulness (TruthfulQA) improve drastically.
 
-  * **[CH05\_NB02\_Data\_Driven\_Selection.ipynb](https://www.google.com/search?q=https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH05/CH05_NB02_Data_Driven_Selection.ipynb)**: (Notebook under development) Here, we evolve to **data-driven** pruning, which is smarter and more specialized.
+  * **[CH05_NB02_data_sms_wiki.ipynb](https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH05/CH05_NB02_data_sms_wiki.ipynb)**: (Notebook under development) In this notebook we add an activation evaluation process, switching to use a data-driven width pruning system.
 
     1.  **Hybrid Importance**: We learn to go beyond static weights to incorporate the model's **activations**.
     2.  **Capturing Activations**: We revisit PyTorch *hooks* (from Chap 4) to capture the output of the `down_proj` layers and use them as an importance signal.
-    3.  **Specialized Pruning**: We use the `optipfair` library to create pruned models that specialize in a specific data type (similar to the Wiki vs. SMS analysis in the previous chapter).
-    4.  **Comparative Evaluation**: We compare the performance of statically pruned models versus data-driven pruned models to demonstrate the value of using activations.
+    4.  **Comparative Evaluation**: We create two specialized models on two different datasets and cross-evaluate them.
 
 **Key Insight**: By the end of this chapter, you will understand that width pruning doesn't just reduce the model's size; it fundamentally alters its behavior. You will learn to use this technique to create smaller models that, paradoxically, can become *better* at specific tasks, like following instructions, by eliminating the "noise" from general-knowledge neurons.
