@@ -41,7 +41,9 @@ Guo, Z., Kamigaito, H., & Wanatnabe, T. (2024). **Dependency-Aware Semi-Structur
 Wang, Y., Ma, M., Wang, Z., Chen, J., Fan, H., Shan, L., Yang, Q., Xu, D., Liu, M., & Qin, B. (2024). **CFSP: An Efficient Structured Pruning Framework for LLMs with Coarse-to-Fine Activation Information.** http://arxiv.org/abs/2409.13199
 * Shows how to combine activations and the combined weight to perform a structured Data-Driven width pruning of MLP modules with GLU structure.
 
-Martra, P. (2024). **Exploring GLU expansion ratios: Structured pruning in LLama-3.2 Models.** https://doi.org/https://doi.org/10.31219/osf.io/qgxea
+Martra, P. (2025). **Fragile Knowledge, Robust Instruction-Following: The Width Pruning Dichotomy in Llama-3.2.** https://www.techrxiv.org/users/1001026/articles/1361522-fragile-knowledge-robust-instruction-following-the-width-pruning-dichotomy-in-llama-3-2
 * Study the effect of pruning on the GLU structure of Llama-3.2 models.
+
+
 
 
