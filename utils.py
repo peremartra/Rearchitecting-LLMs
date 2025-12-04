@@ -26,51 +26,59 @@ def clear_gpu_cache():
 
 def measure_detailed_performance(model, tokenizer, data_source, num_runs=3, max_new_tokens=50, max_samples=None):
     """
-    Measures inference performance metrics with scientific rigor.
+    Measures inference performance with scientific rigor.
     
-    Adapted to use robust timing and warmup logic while maintaining 
-    the original interface for DataLoaders.
+    OPTIMIZED VERSION: Supports Batching and Mixed Precision (AMP) internally 
+    while maintaining the exact same interface and return format.
 
     Args:
         model: Model to evaluate
         tokenizer: Tokenizer
         data_source: DataLoader to sample from (expects batch['input_ids'])
-        num_runs: Number of runs per sample for averaging (Latency focus)
+        num_runs: Number of runs per batch for averaging (Latency focus)
         max_new_tokens: Tokens to generate per sample
         max_samples: Limit number of samples (None = all available)
 
     Returns:
-        dict with timing statistics:
-            - avg_latency_sec: Mean end-to-end latency across all measurements 
-              (num_samples × num_runs total measurements)
+        dict with timing statistics (Compatible with original format):
+            - avg_latency_sec: Mean latency per generation call (per batch if batched)
             - std_latency_sec: Standard deviation of latency
-            - avg_tokens_per_generation: Mean tokens generated per generation
+            - avg_tokens_per_generation: Mean tokens generated per call
             - throughput_tokens_per_sec: Overall throughput (total_tokens / total_time)
             - num_unique_samples: Number of unique input samples tested
-            - num_runs_per_sample: Number of runs performed per sample
+            - num_runs_per_sample: Number of runs performed per batch
             - total_measurements: Total number of generation runs performed
             - total_tokens: Total tokens generated across all runs
+            - (NEW) avg_latency_per_sample_sec: Normalized latency per single sample
+            - (NEW) dtype_used: Precision format used
     """
     device = model.device
     model.eval()
-    
-    # --- 1. DATA PREPARATION (Maintains original logic) ---
-    samples = []
-    # Flatten the data_source to get the list of input tensors
-    for batch in data_source:
-        current_batch_input_ids = batch['input_ids']
-        for i in range(len(current_batch_input_ids)):
-            samples.append(current_batch_input_ids[i])
-            if max_samples and len(samples) >= max_samples:
-                break
-        if max_samples and len(samples) >= max_samples:
-            break
 
-    if max_samples:
-        samples = samples[:max_samples]
+    # --- OPTIMIZATION SETUP ---
+    # Auto-detect best available precision (BF16 for Ampere+, FP16 otherwise)
+    use_amp = torch.cuda.is_available()
+    dtype = torch.bfloat16 if (use_amp and torch.cuda.is_bf16_supported()) else torch.float16
+    print(f"🚀 Optimization active: Using Mixed Precision ({dtype}) if available.")
+    
+    # --- 1. DATA PREPARATION (Optimized) ---
+    # We store BATCHES now, not flattened samples, to allow parallel GPU usage.
+    batches = []
+    total_samples_count = 0
+    
+    for batch in data_source:
+        # Check current batch size
+        current_bs = batch['input_ids'].shape[0]
+        
+        # Stop if we exceed max_samples
+        if max_samples and total_samples_count >= max_samples:
+            break
+            
+        batches.append(batch)
+        total_samples_count += current_bs
 
     # Edge case: No samples available
-    if not samples:
+    if not batches:
         print("⚠️  No samples to measure")
         return {
             'avg_latency_sec': 0.0,
@@ -83,32 +91,43 @@ def measure_detailed_performance(model, tokenizer, data_source, num_runs=3, max_
             'total_tokens': 0
         }
 
-    print(f"Measuring performance on {len(samples)} samples ({num_runs} runs each)...")
+    print(f"Measuring performance on {len(batches)} batches (Total samples: {total_samples_count}, {num_runs} runs each)...")
 
     # --- 2. GPU WARM-UP ---
     # Critical to "warm up" the GPU to load kernels and allocators
     print("   🔥 Performing GPU Warm-up...")
-    warmup_input = samples[0].unsqueeze(0).to(device)
+    warmup_batch = batches[0]
+    warmup_input = warmup_batch['input_ids'].to(device)
+    # Handle attention mask if present (critical for batches)
+    warmup_attn = warmup_batch['attention_mask'].to(device) if 'attention_mask' in warmup_batch else None
+
     with torch.no_grad():
-        # Perform 2 warmup passes (without measuring)
-        for _ in range(2):
-            model.generate(
-                warmup_input,
-                max_new_tokens=max_new_tokens,  # Use same length as test
-                do_sample=False,
-                pad_token_id=tokenizer.pad_token_id
-            )
+        # Use Autocast for warmup too
+        with torch.autocast(device_type='cuda', dtype=dtype, enabled=use_amp):
+            for _ in range(2):
+                model.generate(
+                    warmup_input,
+                    attention_mask=warmup_attn,
+                    max_new_tokens=max_new_tokens,
+                    do_sample=False,
+                    pad_token_id=tokenizer.pad_token_id
+                )
     if torch.cuda.is_available():
         torch.cuda.synchronize()  # Ensure warmup completed
 
     # --- 3. MEASUREMENT LOOP ---
-    latencies = []
+    latencies = [] # Stores latency per generation call (batch latency)
     total_tokens_generated = 0
     total_time_accumulated = 0
 
     with torch.no_grad():
-        for sample in tqdm(samples, desc="Performance test"):
-            input_ids = sample.unsqueeze(0).to(device)
+        for batch in tqdm(batches, desc="Performance test"):
+            input_ids = batch['input_ids'].to(device)
+            attention_mask = batch['attention_mask'].to(device) if 'attention_mask' in batch else None
+            
+            # Dimensions for calculation
+            batch_size = input_ids.shape[0]
+            input_length = input_ids.shape[1]
 
             for _ in range(num_runs):
                 # Synchronize before starting the clock (Vital for precision)
@@ -117,12 +136,15 @@ def measure_detailed_performance(model, tokenizer, data_source, num_runs=3, max_
                 
                 start_time = time.time()
                 
-                outputs = model.generate(
-                    input_ids,
-                    max_new_tokens=max_new_tokens,
-                    do_sample=False,
-                    pad_token_id=tokenizer.pad_token_id
-                )
+                # OPTIMIZATION: Mixed Precision Context
+                with torch.autocast(device_type='cuda', dtype=dtype, enabled=use_amp):
+                    outputs = model.generate(
+                        input_ids,
+                        attention_mask=attention_mask,
+                        max_new_tokens=max_new_tokens,
+                        do_sample=False,
+                        pad_token_id=tokenizer.pad_token_id
+                    )
                 
                 # Synchronize before stopping the clock
                 if torch.cuda.is_available():
@@ -131,7 +153,8 @@ def measure_detailed_performance(model, tokenizer, data_source, num_runs=3, max_
 
                 # Calculations
                 elapsed = end_time - start_time
-                num_new_tokens = outputs.shape[1] - input_ids.shape[1]
+                # Calculate total new tokens: (Total Len - Input Len) * Batch Size
+                num_new_tokens = (outputs.shape[1] - input_length) * batch_size
 
                 # Store raw metrics
                 latencies.append(elapsed)
@@ -139,27 +162,35 @@ def measure_detailed_performance(model, tokenizer, data_source, num_runs=3, max_
                 total_time_accumulated += elapsed
 
     # --- 4. METRICS CALCULATION (Robust logic) ---
-    # Average Latency (End-to-End Latency)
+    # Average Latency (Per generation call)
+    # NOTE: If batch_size > 1, this is the latency of the BATCH, not single sample.
     avg_latency = np.mean(latencies)
     std_latency = np.std(latencies)
     
-    # Average tokens per generation (FIX: removed redundant np.mean)
+    # NEW: Average Latency Normalized per sample (for fair comparison)
+    # We estimate this by dividing batch latency by average batch size approx
+    avg_batch_size = total_samples_count / len(batches) if batches else 1
+    avg_latency_per_sample = avg_latency / avg_batch_size
+
+    # Average tokens per generation call
     avg_tokens_per_gen = total_tokens_generated / len(latencies) if latencies else 0.0
 
-    # Tokens per Second (Global Throughput)
-    # Calculated as Total Tokens / Total Time (More stable than averaging ratios)
+    # Tokens per Second (Global Throughput) - The gold standard for GPU saturation
     throughput = total_tokens_generated / total_time_accumulated if total_time_accumulated > 0 else 0.0
 
     # --- 5. RETURN WITH EXPLICIT TYPES ---
     return {
-        'avg_latency_sec': float(avg_latency),
+        'avg_latency_sec': float(avg_latency),        # Latency of the .generate() call
         'std_latency_sec': float(std_latency),
         'avg_tokens_per_generation': float(avg_tokens_per_gen),
         'throughput_tokens_per_sec': float(throughput),
-        'num_unique_samples': int(len(samples)),
-        'num_runs_per_sample': int(num_runs),
+        'num_unique_samples': int(total_samples_count), # Updated to reflect real count
+        'num_runs_per_sample': int(num_runs),           # Actually runs per batch now
         'total_measurements': int(len(latencies)),
-        'total_tokens': int(total_tokens_generated)
+        'total_tokens': int(total_tokens_generated),
+        # New compatible metrics:
+        'avg_latency_per_sample_sec': float(avg_latency_per_sample),
+        'dtype_used': str(dtype)
     }
 
 def model_evaluation(model_obj, tokenizer, tasks, device='cuda', limit=None, batch_size=4):
