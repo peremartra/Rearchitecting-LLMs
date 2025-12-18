@@ -26,7 +26,7 @@ def clear_gpu_cache():
 
 def measure_detailed_performance(model, tokenizer, data_source, num_runs=3, max_new_tokens=50, max_samples=None):
     """
-    Measures inference performance with scientific rigor.
+    Measures inference performance.
     
     OPTIMIZED VERSION: Supports Batching and Mixed Precision (AMP) internally 
     while maintaining the exact same interface and return format.
@@ -195,17 +195,38 @@ def measure_detailed_performance(model, tokenizer, data_source, num_runs=3, max_
 
 def model_evaluation(model_obj, tokenizer, tasks, device='cuda', limit=None, batch_size=4):
     """
-    Runs lm-eval on a PyTorch model object already in memory.
-
+    Runs evaluation tasks on a loaded PyTorch model using the lm-evaluation-harness.
+    
+    This function wraps a pre-loaded model and tokenizer into an HFLM wrapper, 
+    parses task configurations (supporting both simple strings and few-shot dicts), 
+    and executes the evaluation. Tasks with different few-shot settings are 
+    automatically grouped and evaluated separately. Results are post-processed 
+    to return only the most relevant metrics (perplexity, accuracy, etc.).
+    
     Args:
-        model_obj: The PyTorch model object to evaluate.
-        tokenizer: The tokenizer object.
-        tasks (list): A list of task names.
-        limit (int): The number of samples per task.
+        model_obj (PreTrainedModel): The Hugging Face/PyTorch model object.
+        tokenizer (PreTrainedTokenizer): The associated tokenizer.
+        tasks (list[str | dict]): A list of tasks. Can be task name strings or 
+            dicts with keys 'name' (str) and 'num_fewshot' (int).
+        device (str): Device to run evaluation on (e.g., 'cuda', 'cpu'). 
+            Defaults to 'cuda'.
+        limit (int, optional): Number of samples per task for quick testing. 
+            If None, the full dataset is used.
+        batch_size (int): Batch size for the evaluator. Defaults to 4.
+    
+    Returns:
+        dict: A cleaned results dictionary where keys are task names and values 
+            are nested dicts containing relevant metrics like 'accuracy', 
+            'perplexity', or 'acc_norm'.
+    
+    Example:
+        >>> tasks = [{"name": "hellaswag", "num_fewshot": 5}, "wikitext"]
+        >>> results = model_evaluation(model, tokenizer, tasks)
     """
     print(f"Starting lm-eval on model '{model_obj.config._name_or_path}' for tasks: {tasks}")
     from lm_eval import evaluator
     from lm_eval.models.huggingface import HFLM
+    from collections import defaultdict
     
     # Wrap the local model object and tokenizer for lm-eval
     model_wrapper = HFLM(
@@ -214,63 +235,94 @@ def model_evaluation(model_obj, tokenizer, tasks, device='cuda', limit=None, bat
         device=str(device)
     )
     
-    # Parse tasks to handle both dict and string formats
-    task_names = []
+    # Parse tasks and group by num_fewshot for efficient evaluation
+    fewshot_groups = defaultdict(list)
     task_fewshot_map = {}
-    limit_str = f"(limit={limit})" if limit else "(full dataset)"
+    
     for task in tasks:
         if isinstance(task, dict):
             task_name = task["name"]
-            task_names.append(task_name)
-            task_fewshot_map[task_name] = task["num_fewshot"]
+            num_fewshot = task.get("num_fewshot", 0)
+            fewshot_groups[num_fewshot].append(task_name)
+            task_fewshot_map[task_name] = num_fewshot
         else:
-            # Backward compatibility: simple string list
-            task_names.append(task)
+            # Backward compatibility: simple string list defaults to 0-shot
+            fewshot_groups[0].append(task)
             task_fewshot_map[task] = 0
-
+    
+    limit_str = f"(limit={limit})" if limit else "(full dataset)"
     print(f"\n{'='*70}")
-    print(f"Tasks: {task_names} {limit_str}")
-    print(f"Few-shot config: {task_fewshot_map}")
+    print(f"Tasks grouped by few-shot: {dict(fewshot_groups)} {limit_str}")
+    print(f"Task-level few-shot config: {task_fewshot_map}")
     print(f"{'='*70}\n")
     
-
-    fewshot_value = list(task_fewshot_map.values())[0]
-    results = evaluator.simple_evaluate(
-        model=model_wrapper,
-        tasks=task_names,
-        num_fewshot=fewshot_value,
-        limit=limit,
-        device=str(device),
-        batch_size=batch_size, 
-    )
-
+    # Run evaluation for each few-shot group
+    all_results = {}
+    for num_fewshot, task_list in fewshot_groups.items():
+        print(f"Evaluating {len(task_list)} task(s) with {num_fewshot}-shot learning...")
+        results = evaluator.simple_evaluate(
+            model=model_wrapper,
+            tasks=task_list,
+            num_fewshot=num_fewshot,
+            limit=limit,
+            device=str(device),
+            batch_size=batch_size,
+        )
+        all_results.update(results["results"])
+    
+    # Define priority metrics with their formatting
+    PRIORITY_METRICS = {
+        'perplexity': (['perplexity,none', 'perplexity'], ':.2f'),
+        'word_perplexity': (['word_perplexity,none', 'word_perplexity'], ':.2f'),
+        'bits_per_byte': (['bits_per_byte,none', 'bits_per_byte'], ':.4f'),
+        'accuracy': (['acc,none', 'acc'], ':.4f'),
+        'acc_norm': (['acc_norm,none', 'acc_norm'], ':.4f'),
+        'f1': (['f1,none', 'f1'], ':.4f'),
+        'exact_match': (['exact_match,none', 'em'], ':.4f'),
+    }
+    
     # Format results for clean display
     formatted_results = {}
-    for task_name, res in results["results"].items():
-        # Extract relevant metrics based on task type
-        if 'perplexity,none' in res:
-            # Perplexity tasks (wikitext, lambada)
-            formatted_results[task_name] = {
-                'perplexity': f"{res.get('perplexity,none', 0):.2f}",
-                'word_perplexity': f"{res.get('word_perplexity,none', 0):.2f}",
-                'bits_per_byte': f"{res.get('bits_per_byte,none', 0):.4f}", 
-                'accuracy': f"{res.get('acc,none', 0):.4f}",
-            }
-        elif 'acc,none' in res:
-            # Accuracy tasks (boolq, arc, hellaswag, etc.)
-            formatted_results[task_name] = {
-                'accuracy': f"{res.get('acc,none', 0):.4f}",
-                'acc_norm': f"{res.get('acc_norm,none', 0):.4f}" if 'acc_norm,none' in res else "N/A"
-            }
-        else:
-            # Fallback: store all numeric metrics
+    for task_name, res in all_results.items():
+        formatted_results[task_name] = {}
+        
+        # Extract priority metrics with specific formatting
+        for metric_name, (possible_keys, fmt) in PRIORITY_METRICS.items():
+            for key in possible_keys:
+                if key in res:
+                    val = res[key]
+                    # Apply dynamic formatting using format() builtin
+                    formatted_results[task_name][metric_name] = format(val, fmt.strip(':'))
+                    break
+        
+        # If no priority metrics found, fallback to all numeric metrics
+        if not formatted_results[task_name]:
             formatted_results[task_name] = {
                 k: f"{v:.4f}" for k, v in res.items() 
                 if isinstance(v, (int, float))
             }
+    
     return formatted_results
-
+    
 def evaluate_metrics(model, dataloader, device='cuda'):
+    """
+    Evaluates a language model by calculating average loss and perplexity.
+
+    The function sets the model to evaluation mode, iterates through the 
+    provided dataloader, and computes metrics based on real tokens, 
+    effectively ignoring padding in the loss calculation.
+
+    Args:
+        model (torch.nn.Module): The language model to be evaluated.
+        dataloader (torch.utils.data.DataLoader): The validation or test data loader.
+        device (str, optional): The device to run the evaluation on (e.g., 'cuda', 'cpu'). 
+            Defaults to 'cuda'.
+
+    Returns:
+        dict: A dictionary containing the evaluation results:
+            - 'loss' (float): The average cross-entropy loss per token.
+            - 'perplexity' (float): The model's perplexity score.
+    """
     model.eval()
     model.to(device)
 
