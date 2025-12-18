@@ -1,21 +1,21 @@
-try:
-    import lm_eval
-    import transformers
-    import optipfair
-    import torch
-    import json
-    import gc
-    import langdetect
-    import time
-    from tqdm import tqdm
-    import numpy as np 
-    import codecarbon
-except ImportError as e:
-    raise ImportError(
-        f"Missing required library: {e.name}\n"
-        "Install all dependencies with:\n"
-        "  pip install optipfair lm-eval transformers torch langdetect"
-    )
+#try:
+import lm_eval
+import transformers
+import optipfair
+import torch
+import json
+import gc
+import langdetect
+import time
+from tqdm import tqdm
+import numpy as np 
+import codecarbon
+#except ImportError as e:
+#    raise ImportError(
+#        f"Missing required library: {e.name}\n"
+#        "Install all dependencies with:\n"
+#        "  pip install optipfair lm-eval transformers torch langdetect"
+#    )
 
 def clear_gpu_cache():
     """Clear GPU cache completely"""
