@@ -1,5 +1,5 @@
-# Rearchitecting LLMs. 
-**SurgicalOptimization for Hyper-Efficient Models**
+# Tailoring LLMs Architectures. 
+**Surgical Optimization Beyond Fine-Tunings**
 
 [![GitHub stars](https://img.shields.io/github/stars/peremartra/Rearchitecting-LLMs?style=social)](https://github.com/peremartra/Rearchitecting-LLMs/stargazers)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
