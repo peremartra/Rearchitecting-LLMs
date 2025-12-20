@@ -1,7 +1,7 @@
-# Tailoring LLMs Architectures. 
+# Tailoring LLM Architectures. 
 **Surgical Optimization Beyond Fine-Tunings**
 
-[![GitHub stars](https://img.shields.io/github/stars/peremartra/Rearchitecting-LLMs?style=social)](https://github.com/peremartra/Rearchitecting-LLMs/stargazers)
+[![GitHub stars](https://img.shields.io/github/stars/peremartra/Tailoring-LLM-Architectures?style=social)](https://github.com/peremartra/Tailoring-LLM-Architectures/stargazers)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![optiPfair Downloads](https://img.shields.io/pypi/dm/optipfair?label=optiPfair%20downloads)](https://pypi.org/project/optipfair/)
@@ -49,19 +49,19 @@ Being an LLM architect is a process. This repository is structured to guide you 
 **Your First Surgery - Structural Pruning**
 * The Challenge: Perform your first structural modification on a model.
 * Your Mission: Learn to identify and remove redundant components from an LLM (Depth Pruning) to make it lighter and faster, and then use Knowledge Distillation to "heal" the model and restore its performance.
-* Key Resources: [CH02/CH02_NB01_Depth_pruning_evaluation.ipynb](https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH02/CH02_NB01_Depth_pruning_evaluation.ipynb) and [CH02/CH02_NB02_Knowledge_Recovery.ipynb](https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH02/CH02_NB02_Knowledge_Recovery.ipynb)
+* Key Resources: [CH02/CH02_NB01_Depth_pruning_evaluation.ipynb](https://github.com/peremartra/Tailoring-LLM-Architectures/blob/main/CH02/CH02_NB01_Depth_pruning_evaluation.ipynb) and [CH02/CH02_NB02_Knowledge_Recovery.ipynb](https://github.com/peremartra/Tailoring-LLM-Architectures/blob/main/CH02/CH02_NB02_Knowledge_Recovery.ipynb)
 
 **From "Black Box" to Model Anatomy**
 * The Challenge: Stop seeing LLMs as a magic black box.
 * Your Mission: Understand its internal structure, how information flows, and where its capabilities truly reside. You'll start thinking in terms of layers, blocks, modules, and neurons, not just prompts and responses.
-* Key Resource: [CH03/CH03_NB01_Model_structures.ipynb](https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH03/CH03_NB01_Model_structures.ipynb)
+* Key Resource: [CH03/CH03_NB01_Model_structures.ipynb](https://github.com/peremartra/Tailoring-LLM-Architectures/blob/main/CH03/CH03_NB01_Model_structures.ipynb)
 
 🆕 **Data-Driven Depth Pruning** 🆕
 * The Challenge: Move beyond random layer removal to intelligent, data-driven pruning decisions.
 * Your Mission: Master PyTorch hooks to analyze layer importance using cosine similarity. Learn to identify which layers contribute most to your specific task and create specialized models optimized for different data types (complex vs. simple text).
 * What You'll Build: Two optimized models—one for complex text (WikiText) and one for simple text (SMS)—each achieving 11-13% speedup while maintaining task-specific performance.
 * Key Insight: Layer importance varies dramatically by task complexity. What's essential for deep reasoning may be dead weight for simple classification.
-* Key Resource: [CH04/CH04_NB01_Cosine_Similarity.ipynb](https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH04/CH04_NB01_Cosine_Similarity.ipynb)
+* Key Resource: [CH04/CH04_NB01_Cosine_Similarity.ipynb](https://github.com/peremartra/Tailoring-LLM-Architectures/blob/main/CH04/CH04_NB01_Cosine_Similarity.ipynb)
 
 **Diving deeper into structural optimization.**
 * The Challenge: Adapt the model's structure to its mission and the data it will use.

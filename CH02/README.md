@@ -1,4 +1,4 @@
-# Rearchitecting LLMs - Chapter 2
+# Tailoring LLM Architectures - Chapter 2
 
 ## Rearchitecting an LLM: A hands-on introduction
 
@@ -8,13 +8,13 @@ This directory contains the notebooks for Chapter 2, where we perform the first 
 
 The process is divided into two phases, each implemented in its own notebook:
 
-* **[CH02\_NB01\_Depth\_pruning\_evaluation.ipynb](https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH02/CH02_NB01_Depth_pruning_evaluation.ipynb)**: In this notebook, we perform the "surgery" on the model.
+* **[CH02\_NB01\_Depth\_pruning\_evaluation.ipynb](https://github.com/peremartra/Tailoring-LLM-Architectures/blob/main/CH02/CH02_NB01_Depth_pruning_evaluation.ipynb)**: In this notebook, we perform the "surgery" on the model.
 
     1.  **Establish the Baseline**: We measure the performance of a standard model (`gemma-3-270m`) to have a clear reference point.
     2.  **Apply Depth Pruning**: We remove two complete layers from the model, reducing its size and, therefore, increasing its inference speed.
     3.  **Evaluate the Impact**: We quantify the performance degradation of the model after pruning to understand the cost of the optimization.
 
-* **[CH02\_NB02\_Knowledge\_Recovery.ipynb](https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH02/CH02_NB02_Knowledge_Recovery.ipynb)**: In this second part, we complete the cycle by "healing" the pruned model.
+* **[CH02\_NB02\_Knowledge\_Recovery.ipynb](https://github.com/peremartra/Tailoring-LLM-Architectures/blob/main/CH02/CH02_NB02_Knowledge_Recovery.ipynb)**: In this second part, we complete the cycle by "healing" the pruned model.
 
     1.  **Prepare the Models**: We load the original model as the "teacher" and the pruned model as the "student".
     2.  **Apply Knowledge Distillation**: We train the student model to imitate the "reasoning process" of the teacher model, transferring the lost knowledge.

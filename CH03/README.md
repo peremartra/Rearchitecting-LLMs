@@ -1,11 +1,11 @@
-# Rearchitecting LLMs - Chapter 3
+# Tailoring LLM Architectures - Chapter 3
 ## Transformer anatomy: knowing what you'll optimize
 This directory contains the notebook for Chapter 3, where we lay the essential groundwork for re-architecting. Before a surgeon can operate, they must have a deep understanding of anatomy. This chapter is dedicated to dissecting various LLMs to understand the evolution of their internal structure.
 
 ### Contents
 The chapter consists of one practical notebook where we perform a comparative analysis of several key architectures:
 
-* **[CH03_NB01_Model_structures.ipynb](https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH03/CH03_NB01_Model_structures.ipynb)**: In this notebook, we dissect a range of models to build a strong mental map of modern LLM anatomy.
+* **[CH03_NB01_Model_structures.ipynb](https://github.com/peremartra/Tailoring-LLM-Architectures/blob/main/CH03/CH03_NB01_Model_structures.ipynb)**: In this notebook, we dissect a range of models to build a strong mental map of modern LLM anatomy.
 
 * **The Classic Architecture**: We begin by analyzing DistilGPT2 to establish a baseline and understand the classic components of a decoder-only model.
 

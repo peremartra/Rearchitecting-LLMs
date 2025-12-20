@@ -1,4 +1,4 @@
-# Rearchitecting LLMs - Chapter 4
+# Tailoring LLM Architectures - Chapter 4
 
 ## Depth Pruning: Building Smaller and Faster Models
 
@@ -8,7 +8,7 @@ This directory contains the notebooks for Chapter 4, where we dive deep into sys
 
 This chapter explores, at first, static methods to select the layers to remove, then moves to data-driven approaches to depth pruning, moving beyond simple heuristics to intelligent layer selection:
 
-* **[CH04_NB01_Cosine_Similarity.ipynb](https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH04/CH04_NB01_Cosine_Similarity.ipynb)**: In this notebook, we implement advanced layer importance analysis using cosine similarity.
+* **[CH04_NB01_Cosine_Similarity.ipynb](https://github.com/peremartra/Tailoring-LLM-Architectures/blob/main/CH04/CH04_NB01_Cosine_Similarity.ipynb)**: In this notebook, we implement advanced layer importance analysis using cosine similarity.
 
     1.  **Understanding Layer Contributions**: Learn to measure how much each transformer block modifies the input data using cosine similarity between input and output representations.
     2.  **PyTorch Hooks Mastery**: Implement forward hooks to capture intermediate activations and analyze layer behavior during inference.
