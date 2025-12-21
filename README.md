@@ -1,5 +1,5 @@
 # Tailoring LLM Architectures. 
-**Surgical Optimization Beyond Fine-Tunings**
+**Surgical Optimization Beyond Fine-Tuning**
 
 [![GitHub stars](https://img.shields.io/github/stars/peremartra/Tailoring-LLM-Architectures?style=social)](https://github.com/peremartra/Tailoring-LLM-Architectures/stargazers)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
