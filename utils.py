@@ -599,14 +599,10 @@ def measure_energy_consumption(model, tokenizer, data_source, idle_power_watts=N
                     total_tokens_generated += num_new_tokens
 
     finally:
-        # CORRECTED: Stop tracker and get both energy and CO2 separately
+        # Stop tracker immediately after inference
         tracker.stop()
-        
-        # Get energy consumed in kWh (not CO2!)
-        emissions_raw_kwh = tracker._total_energy.kWh
-        
-        # Get CO2 emissions in kg
-        co2_raw_kg = tracker.final_emissions
+        emissions_raw_kwh = tracker._total_energy.kWh  # Get energy, not CO2
+        co2_raw_kg = float(tracker.final_emissions)    # Get CO2 separately
 
     duration_seconds = time.time() - start_time
 
@@ -621,16 +617,8 @@ def measure_energy_consumption(model, tokenizer, data_source, idle_power_watts=N
     # Joules are better than kWh for small comparisons (1 kWh = 3.6M Joules)
     total_joules_net = energy_net_kwh * 3_600_000
     joules_per_token = total_joules_net / total_tokens_generated if total_tokens_generated > 0 else 0.0
-
-    # --- 8. CO2 EMISSIONS ---
-    # Note: CO2 is calculated on raw energy consumption by CodeCarbon
-    # For net CO2, we proportionally adjust: co2_net = co2_raw * (energy_net / energy_raw)
-    if emissions_raw_kwh > 0:
-        co2_net_kg = co2_raw_kg * (energy_net_kwh / emissions_raw_kwh)
-    else:
-        co2_net_kg = 0.0
     
-    # --- 9. RETURN WITH EXPLICIT TYPES (Consistent with performance function) ---
+    # --- 8. RETURN WITH EXPLICIT TYPES (Consistent with performance function) ---
     return {
         "duration_sec": float(duration_seconds),
         "total_tokens": int(total_tokens_generated),
@@ -641,6 +629,5 @@ def measure_energy_consumption(model, tokenizer, data_source, idle_power_watts=N
         "energy_idle_correction_kwh": float(idle_energy_kwh),
         "energy_net_kwh": float(energy_net_kwh),
         "efficiency_joules_per_token": float(joules_per_token),
-        "co2_emissions_kg": co2_net_kg,  # Net CO2 (after idle correction)
-        "co2_emissions_raw_kg": co2_raw_kg  # Raw CO2 (before idle correction)
+        "co2_emissions_kg": co2_raw_kg
     }
