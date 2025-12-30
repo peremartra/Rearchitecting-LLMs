@@ -429,11 +429,15 @@ def calibrate_idle_power(device="cuda", duration_seconds=30, verbose=True):
         print(f"   Measuring idle power for {duration_seconds}s...")
     time.sleep(duration_seconds)
     
-    emissions_kwh = tracker.stop()
+    # CORRECTED: tracker.stop() returns CO2 emissions in kg, not energy
+    tracker.stop()
     actual_duration = time.time() - start_time
     
-    # Calculate average power
-    idle_power_watts = (emissions_kwh * 1000) / (actual_duration / 3600)  # kWh -> W
+    # Get the actual energy consumed in kWh from tracker's internal state
+    energy_kwh = tracker._total_energy.kWh
+    
+    # Calculate average power: Power (W) = Energy (kWh) * 1000 / Time (hours)
+    idle_power_watts = (energy_kwh * 1000) / (actual_duration / 3600)  # kWh -> W
     
     # Capture GPU state
     gpu_info = {}
@@ -446,7 +450,7 @@ def calibrate_idle_power(device="cuda", duration_seconds=30, verbose=True):
     
     calibration_result = {
         "idle_power_watts": idle_power_watts,
-        "idle_energy_kwh": emissions_kwh,
+        "idle_energy_kwh": energy_kwh,
         "measurement_duration_s": actual_duration,
         "timestamp": datetime.now().isoformat(),
         **gpu_info
@@ -455,7 +459,7 @@ def calibrate_idle_power(device="cuda", duration_seconds=30, verbose=True):
     if verbose:
         print(f"✅ Calibration complete!")
         print(f"   Idle Power: {idle_power_watts:.2f} W")
-        print(f"   Idle Energy (30s): {emissions_kwh:.6f} kWh")
+        print(f"   Idle Energy (30s): {energy_kwh:.6f} kWh")
         if gpu_info.get("gpu_temp_celsius"):
             print(f"   GPU Temperature: {gpu_info['gpu_temp_celsius']:.1f}°C")
     
@@ -595,8 +599,14 @@ def measure_energy_consumption(model, tokenizer, data_source, idle_power_watts=N
                     total_tokens_generated += num_new_tokens
 
     finally:
-        # Stop tracker immediately after inference
-        emissions_raw_kwh = tracker.stop()
+        # CORRECTED: Stop tracker and get both energy and CO2 separately
+        tracker.stop()
+        
+        # Get energy consumed in kWh (not CO2!)
+        emissions_raw_kwh = tracker._total_energy.kWh
+        
+        # Get CO2 emissions in kg
+        co2_raw_kg = tracker.final_emissions
 
     duration_seconds = time.time() - start_time
 
@@ -613,9 +623,12 @@ def measure_energy_consumption(model, tokenizer, data_source, idle_power_watts=N
     joules_per_token = total_joules_net / total_tokens_generated if total_tokens_generated > 0 else 0.0
 
     # --- 8. CO2 EMISSIONS ---
-    # Note: CodeCarbon calculates this on raw energy consumption
-    # For net CO2, you would need: co2_net = co2_raw * (energy_net / energy_raw)
-    co2_raw_kg = float(tracker.final_emissions)
+    # Note: CO2 is calculated on raw energy consumption by CodeCarbon
+    # For net CO2, we proportionally adjust: co2_net = co2_raw * (energy_net / energy_raw)
+    if emissions_raw_kwh > 0:
+        co2_net_kg = co2_raw_kg * (energy_net_kwh / emissions_raw_kwh)
+    else:
+        co2_net_kg = 0.0
     
     # --- 9. RETURN WITH EXPLICIT TYPES (Consistent with performance function) ---
     return {
@@ -628,5 +641,6 @@ def measure_energy_consumption(model, tokenizer, data_source, idle_power_watts=N
         "energy_idle_correction_kwh": float(idle_energy_kwh),
         "energy_net_kwh": float(energy_net_kwh),
         "efficiency_joules_per_token": float(joules_per_token),
-        "co2_emissions_kg": co2_raw_kg
+        "co2_emissions_kg": co2_net_kg,  # Net CO2 (after idle correction)
+        "co2_emissions_raw_kg": co2_raw_kg  # Raw CO2 (before idle correction)
     }
