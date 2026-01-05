@@ -239,3 +239,91 @@ $$L_{Total} = \alpha L_{Task} + \beta L_{Logits} + \gamma L_{Hidden}$$
 
 * **Decision Guide: When to use Universal Distiller vs Simple KD?**
   *
+
+  ____
+## Notebooks: 
+# 📚 Notebook Series Overview
+
+This repository contains a sequence of 3 notebooks designed to guide you through advanced knowledge recovery and model distillation strategies.
+
+---
+
+## 🟢 NB01: The Fuel — Data Strategy for Knowledge Recovery
+
+**🎯 Reader's Goal:** "I learn that data quality is as important as architecture"
+
+* **⏱️ Estimated Time:** 1 - 1.5 hours
+* **💾 VRAM Profile:** 1 light training run (5 epochs)
+* **📏 Length:** ~80-100 cells
+
+### Content
+
+1.  **Intro:** Why SlimPajama isn't enough?
+2.  **Loading Cosmopedia:** Partition selection (stories or stanford).
+3.  **Tokenization pipeline:** Adapted for textbook-quality data.
+4.  **Core Experiment:**
+    * SlimPajama 30K samples (baseline from Ch2).
+    * Cosmopedia 15K samples (new proposal).
+5.  **Training:** 5 epochs, simple KD (logits-only).
+6.  **Evaluation:** ARC-Easy recovery %.
+7.  **Table:** Quality vs Quantity showdown.
+
+> **Sidebar: Temperature Scaling**
+> Visualization of `softmax(logits/T)` with $T=1.0, 2.0, 4.0$.
+> * 1 code cell showing the effect.
+> * *Note:* "We'll use $T=2.0$ in NB03".
+
+**💡 Takeaway:** "With dense data, I recover more with fewer samples."
+**📝 Final Note:** "Appendix C to generate your own synthetic data."
+
+⚠️ **Kernel Restart:** At the end of the notebook, reader frees memory and is ready for NB02.
+
+---
+
+## 🟡 NB02: The Engine — Building the Architectural Bridge
+
+**🎯 Reader's Goal:** "I'm an architect. I design and validate the system components"
+
+* **⏱️ Estimated Time:** 1.5 - 2 hours
+* **💾 VRAM Profile:** 1 short training run (5 epochs, two sequential variants)
+* **📏 Length:** ~100-120 cells
+
+### Content
+
+1.  **Intro:** The Teacher-Student Gap (depth mismatch + width mismatch).
+2.  **Part A: Layer Mapping**
+    * Implementation: `create_layer_map(n_student, n_teacher)`
+    * **Strategy A:** Uniform (proportional).
+    * **Strategy B:** Last-Layer (focus on deep reasoning).
+    * *Visualization:* Diagram of which layers connect.
+3.  **Part B: Learnable Projectors**
+    * Implementation: `LearnableProjector` class.
+    * `nn.Linear(student_dim, teacher_dim)`.
+    * Explanation of why it's trainable.
+4.  **Part C: Validation Experiment**
+    * Training: 5 epochs with Uniform mapping.
+    * Training: 5 epochs with Last-Layer mapping.
+    * **Comparison table:** ARC-Easy & HellaSwag.
+    * **Result:** Last-Layer wins by 2-3%.
+
+**💡 Insight:** "Deep layers are more critical."
+**🚀 Takeaway:** "I already have the validated components. Now I put them together in production."
+
+⚠️ **Kernel Restart:** At the end, reader frees everything and starts fresh for the final marathon.
+
+---
+
+## 🔴 NB03: The Race — Production Pipeline & Comprehensive Analysis
+
+**🎯 Reader's Goal:** "I'm an ML Engineer. I train the complete system and analyze the results"
+
+* **⏱️ Estimated Time:** 2 - 3 hours (includes 3 epochs of training)
+* **💾 VRAM Profile:** 1 long training run + extensive evaluations
+* **📏 Length:** ~120-140 cells
+
+### Content
+
+1.  **Intro:** "Now we apply everything we learned in a production pipeline."
+2.  **Part A: Compound Loss Implementation (Sec 6.4)**
+    * Formalization of the compound Loss:
+        $$L_{Total} = \alpha L_{
