@@ -248,13 +248,13 @@ This repository contains a sequence of 3 notebooks designed to guide you through
 
 ---
 
-## 🟢 NB01: The Fuel — Data Strategy for Knowledge Recovery
+## NB01: The Fuel — Data Strategy for Knowledge Recovery
 
-**🎯 Reader's Goal:** "I learn that data quality is as important as architecture"
+** Reader's Goal:** "I learn that data quality is as important as architecture"
 
-* **⏱️ Estimated Time:** 1 - 1.5 hours
-* **💾 VRAM Profile:** 1 light training run (5 epochs)
-* **📏 Length:** ~80-100 cells
+* ** Estimated Time:** 1 - 1.5 hours
+* ** VRAM Profile:** 1 light training run (5 epochs)
+* ** Length:** ~80-100 cells
 
 ### Content
 
@@ -273,20 +273,19 @@ This repository contains a sequence of 3 notebooks designed to guide you through
 > * 1 code cell showing the effect.
 > * *Note:* "We'll use $T=2.0$ in NB03".
 
-**💡 Takeaway:** "With dense data, I recover more with fewer samples."
-**📝 Final Note:** "Appendix C to generate your own synthetic data."
-
-⚠️ **Kernel Restart:** At the end of the notebook, reader frees memory and is ready for NB02.
+** Takeaway:** "With dense data, I recover more with fewer samples."
+** Final Note:** "Appendix C to generate your own synthetic data."
+**Kernel Restart:** At the end of the notebook, reader frees memory and is ready for NB02.
 
 ---
 
-## 🟡 NB02: The Engine — Building the Architectural Bridge
+##  NB02: The Engine — Building the Architectural Bridge
 
-**🎯 Reader's Goal:** "I'm an architect. I design and validate the system components"
+** Reader's Goal:** "I'm an architect. I design and validate the system components"
 
-* **⏱️ Estimated Time:** 1.5 - 2 hours
-* **💾 VRAM Profile:** 1 short training run (5 epochs, two sequential variants)
-* **📏 Length:** ~100-120 cells
+* ** Estimated Time:** 1.5 - 2 hours
+* ** VRAM Profile:** 1 short training run (5 epochs, two sequential variants)
+* ** Length:** ~100-120 cells
 
 ### Content
 
@@ -306,24 +305,52 @@ This repository contains a sequence of 3 notebooks designed to guide you through
     * **Comparison table:** ARC-Easy & HellaSwag.
     * **Result:** Last-Layer wins by 2-3%.
 
-**💡 Insight:** "Deep layers are more critical."
-**🚀 Takeaway:** "I already have the validated components. Now I put them together in production."
+** Insight:** "Deep layers are more critical."
+** Takeaway:** "I already have the validated components. Now I put them together in production."
 
-⚠️ **Kernel Restart:** At the end, reader frees everything and starts fresh for the final marathon.
+ **Kernel Restart:** At the end, reader frees everything and starts fresh for the final marathon.
 
 ---
 
-## 🔴 NB03: The Race — Production Pipeline & Comprehensive Analysis
+##  NB03: The Race — Production Pipeline & Comprehensive Analysis
 
-**🎯 Reader's Goal:** "I'm an ML Engineer. I train the complete system and analyze the results"
+** Reader's Goal:** "I'm an ML Engineer. I train the complete system and analyze the results"
 
-* **⏱️ Estimated Time:** 2 - 3 hours (includes 3 epochs of training)
-* **💾 VRAM Profile:** 1 long training run + extensive evaluations
-* **📏 Length:** ~120-140 cells
+* ** Estimated Time:** 2 - 3 hours (includes 3 epochs of training)
+* ** VRAM Profile:** 1 long training run + extensive evaluations
+* ** Length:** ~120-140 cells
 
 ### Content
 
 1.  **Intro:** "Now we apply everything we learned in a production pipeline."
 2.  **Part A: Compound Loss Implementation (Sec 6.4)**
     * Formalization of the compound Loss:
-        $$L_{Total} = \alpha L_{
+        $$L_{Total} = \alpha L_{Task} + \beta L_{Logits} + \gamma L_{Hidden}$$
+    * Detailed explanation of each component.
+    * Recommended hyperparameters based on pruning type.
+    * Code: Function `compute_compound_loss()`.
+3.  **Part B: Universal Distillation Trainer (Sec 6.5)**
+    * Subclassing `Trainer`.
+    * Override of `compute_loss`.
+    * Projectors lifecycle (save/load).
+    * `TrainingArguments` setup.
+4.  **Part C: Full Training**
+    * Load Llama-3.2-1B pruned (Ch5).
+    * 3 epochs on Cosmopedia 30K.
+    * Hyperparameters: $\alpha=0.4, \beta=0.4, \gamma=0.2, T=2.0$.
+    * Progress bars: Training loop with logging.
+5.  **Part D: Comprehensive Evaluation (Sec 6.6)**
+    * **Table 6.1:** Before/After on all benchmarks (ARC-Easy, ARC-Challenge, HellaSwag, Winogrande, LAMBADA).
+    * Recovery rate: **93-97%** vs 90-95% (Ch2 simple KD).
+6.  **Part E: Visualizations**
+    * Figure 6.X: Feature Loss decay curve.
+    * Figure 6.Y: Layer-wise cosine similarity heatmap.
+    * *Interpretation:* "Last layers converge faster".
+7.  **Part F: Ablation Study**
+    * **Table 6.2:** Impact of each loss component.
+        * Only $L_{Task}$: ~85% recovery.
+        * $L_{Task} + L_{Logits}$: ~92% recovery (Ch2 approach).
+        * $L_{Task} + L_{Logits} + L_{Hidden}$: ~96% recovery (our method).
+
+** Conclusion:** Hidden state alignment is the key factor.
+** Takeaway:** "The Universal Distiller works. I've recovered 95%+ of the capabilities."
