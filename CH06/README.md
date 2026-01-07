@@ -361,3 +361,87 @@ def create_optimizer(self):
 - Hyperparameter tuning depends on pruning type: Width pruning needs higher γ
 - The UniversalDistillationTrainer provides production-ready infrastructure
 - Ablation studies confirm: hidden state alignment provides the critical 4-5% improvement
+
+___
+## Chapter 6: Knowledge Distillation & Recovery
+
+### CH06_NB01_Compound_Loss_Foundations.ipynb
+
+**Sections covered:** 6.1 + 6.2  
+**Estimated duration:** 15-20 min in Colab
+
+**Objective:** Establish the foundations and compound loss
+
+**Content:**
+- Demonstrate the limitation of logits-only KD
+- Load a pruned model from Ch. 5
+- Try recovery with only $L_{Task} + L_{Logits}$
+- Show that it reaches ~92% recovery and stalls
+- Introduce the concept of Feature Alignment
+  - Visualize hidden states of the Teacher vs Student
+  - Show the "distance" between internal representations
+- Implement Compound Loss
+  - The 3 components separately
+  - The final combination
+  - Quick experiment: $\alpha, \beta, \gamma$ ablation
+  - Try different weight combinations
+  - Show that $\gamma > 0$ makes the difference
+- Why separate:
+  - It's conceptual and fundamental
+  - Allows understanding the "what" and "why" without getting overwhelmed by technical details
+  - The reader can experiment with loss weights without waiting for long training sessions
+
+### CH06_NB02_Bridging_Technical_Gaps.ipynb
+
+**Sections covered:** 6.3 + 6.4  
+**Estimated duration:** 25-30 min in Colab
+
+**Objective:** Resolve the two technical problems (depth + width mismatch)
+
+**Content:**
+- Depth Mismatch (6.3)
+  - Implement `create_layer_map_uniform()`
+  - Implement `create_layer_map_last()`
+  - Comparative quick experiment (5 epochs)
+  - Results table + mapping visualization
+- Width Mismatch (6.4)
+  - Show the crash due to dimension mismatch
+  - Implement `LearnableProjector` class
+  - Quick experiment: Fixed vs Learnable projectors
+  - Results table
+- Integration Test
+  - Combine layer mapping + projectors + compound loss
+  - Small training run (3 epochs) to validate that everything works
+  - No full evaluation yet (that goes in NB03)
+- Why separate:
+  - They are two clearly differentiated technical problems
+  - The experiments are fast (5 epochs each)
+  - The reader can understand each solution in isolation
+  - Ends with an integration that validates that "the pieces fit"
+
+### CH06_NB03_Universal_Distiller_Complete.ipynb
+
+**Sections covered:** 6.5 + 6.6 + 6.7  
+**Estimated duration:** 40-50 min in Colab (includes full training)
+
+**Objective:** Production-ready implementation and exhaustive evaluation
+
+**Content:**
+- Hyperparameter Guidelines (6.5)
+  - Table of starting points per pruning type
+  - Code to auto-select hyperparams according to pruning type
+- UniversalDistillationTrainer (6.6)
+  - Full implementation of the class
+  - Integration of projectors in optimizer
+  - Checkpoint management
+- Complete Training Run (6.7)
+  - Load pruned Llama-3.2-1B (Ch. 5)
+  - Full training: 3 epochs on WikiText
+  - Progress tracking with wandb/tensorboard
+- Comprehensive Evaluation (6.7)
+  - Full benchmarks (ARC, HellaSwag, Winogrande, LAMBADA)
+  - Comparative table: Original vs Pruned vs Recovered
+  - Visualizations: Feature loss decay, Cosine similarity heatmap
+- Ablation Study (6.7.4)
+  - Train 3 versions with different loss combinations
+  - Final table showing the contribution of each component
