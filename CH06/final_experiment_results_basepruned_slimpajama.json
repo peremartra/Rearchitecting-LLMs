@@ -1,0 +1,121 @@
+{
+    "metadata": {
+        "experiment_name": "Layer Mapping & Advanced KD Comparison",
+        "timestamp": "2026-01-09T16:10:56.969774",
+        "versions": {
+            "torch": "2.9.0+cu126"
+        }
+    },
+    "models": {
+        "teacher": "google/gemma-3-270m",
+        "student": "gemma-3-270m-pruned"
+    },
+    "experiments": {
+        "uniform_logits_only": {
+            "config": {
+                "layer_mapping": "uniform",
+                "alpha": 0.5,
+                "beta": 0.5,
+                "gamma": 0.0,
+                "temperature": 2.0
+            },
+            "metrics": {
+                "time_min": 12.335119915008544,
+                "perplexity": 83.39855340738153,
+                "recovery_%": 92.59953262594152,
+                "arc_easy": 0.4335,
+                "hellaswag": 0.3361,
+                "lambada_openai": 0.2496,
+                "piqa": 0.599,
+                "winogrande": 0.517,
+                "cap_recovery_%": 6.335010247810718,
+                "overall_recovery_%": 49.46727143687612
+            },
+            "training_stats": {
+                "total_time_seconds": 740.1071949005127,
+                "final_loss": 4.494576035031847,
+                "epochs_trained": 3
+            }
+        },
+        "last_layer_logits_only": {
+            "config": {
+                "layer_mapping": "last_layer",
+                "alpha": 0.5,
+                "beta": 0.5,
+                "gamma": 0.0,
+                "temperature": 2.0
+            },
+            "metrics": {
+                "time_min": 12.32564609448115,
+                "perplexity": 83.35404356651586,
+                "recovery_%": 92.60469936710555,
+                "arc_easy": 0.4314,
+                "hellaswag": 0.3362,
+                "lambada_openai": 0.2486,
+                "piqa": 0.6001,
+                "winogrande": 0.5241,
+                "cap_recovery_%": 7.3038941680640015,
+                "overall_recovery_%": 49.95429676758478
+            },
+            "training_stats": {
+                "total_time_seconds": 739.538765668869,
+                "final_loss": 4.468202627388535,
+                "epochs_trained": 3
+            }
+        },
+        "last_layer_features": {
+            "config": {
+                "layer_mapping": "last_layer",
+                "alpha": 0.4,
+                "beta": 0.4,
+                "gamma": 0.2,
+                "temperature": 2.0
+            },
+            "metrics": {
+                "time_min": 12.343024969100952,
+                "perplexity": 83.95951845015328,
+                "recovery_%": 92.53441531431555,
+                "arc_easy": 0.4335,
+                "hellaswag": 0.3356,
+                "lambada_openai": 0.2467,
+                "piqa": 0.5958,
+                "winogrande": 0.5312,
+                "cap_recovery_%": 7.751071362027247,
+                "overall_recovery_%": 50.1427433381714
+            },
+            "training_stats": {
+                "total_time_seconds": 740.5814981460571,
+                "final_loss": 3.6944914410828025,
+                "epochs_trained": 3
+            }
+        },
+        "advanced_kd": {
+            "config": {
+                "layer_mapping": "last_layer",
+                "alpha": 0.4,
+                "beta": 0.4,
+                "gamma": 0.1,
+                "delta": 0.1,
+                "skew_alpha": 0.5,
+                "temperature": 2.0
+            },
+            "metrics": {
+                "time_min": 13.430357217788696,
+                "perplexity": 61.10663360877338,
+                "recovery_%": 95.1871981266198,
+                "arc_easy": 0.4314,
+                "hellaswag": 0.3411,
+                "lambada_openai": 0.2921,
+                "piqa": 0.6039,
+                "winogrande": 0.5162,
+                "cap_recovery_%": 15.558039873299782,
+                "overall_recovery_%": 55.37261899995979
+            },
+            "training_stats": {
+                "total_time_seconds": 805.8214330673218,
+                "final_loss": 1.8752612460191083,
+                "epochs_trained": 3
+            }
+        }
+    }
+}
