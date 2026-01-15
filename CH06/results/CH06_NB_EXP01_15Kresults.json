@@ -1,0 +1,243 @@
+{
+    "metadata": {
+        "experiment_name": "Layer Mapping & Advanced KD Comparison",
+        "timestamp": "2026-01-15T11:34:52.039541",
+        "versions": {
+            "torch": "2.9.0+cu126"
+        }
+    },
+    "models": {
+        "teacher": "google/gemma-3-270m",
+        "student": "Gemma-270m-Pruned (14 layers)"
+    },
+    "experiments": {
+        "teacher": {
+            "type": "baseline",
+            "metrics": {
+                "time_min": 0.0,
+                "perplexity": 12.887801321599287,
+                "recovery_%": 100.0,
+                "arc_easy": 0.567,
+                "hellaswag": 0.4455,
+                "lambada_openai": 0.425,
+                "piqa": 0.6839,
+                "winogrande": 0.543,
+                "cap_retention_%": 100.0,
+                "overall_recovery_%": 100.0
+            }
+        },
+        "student_pruned": {
+            "type": "baseline",
+            "metrics": {
+                "time_min": 0.0,
+                "perplexity": 120.76748890490103,
+                "recovery_%": 10.6715817629924,
+                "arc_easy": 0.423,
+                "hellaswag": 0.387,
+                "lambada_openai": 0.1805,
+                "piqa": 0.6083,
+                "winogrande": 0.517,
+                "cap_retention_%": 79.40999849872391,
+                "overall_recovery_%": 45.040790130858156
+            }
+        },
+        "uniform_logits_only": {
+            "type": "trained_student",
+            "config": {
+                "alpha": 0.5,
+                "beta": 0.5,
+                "gamma": 0.0,
+                "temp": 2.0,
+                "mapping": "uniform",
+                "description": "Logits-only KD"
+            },
+            "metrics": {
+                "time_min": 18.161956465244295,
+                "perplexity": 14.232409162640622,
+                "recovery_%": 90.55249307635938,
+                "arc_easy": 0.5015,
+                "hellaswag": 0.412,
+                "lambada_openai": 0.3255,
+                "piqa": 0.6333,
+                "winogrande": 0.5233,
+                "cap_retention_%": 89.91142471100436,
+                "overall_recovery_%": 90.23195889368188
+            },
+            "training_stats": {
+                "total_time_seconds": 1089.7173879146576,
+                "final_loss": 1.7854773569915254,
+                "epochs_trained": 3
+            }
+        },
+        "last_layer_logits_only": {
+            "type": "trained_student",
+            "config": {
+                "alpha": 0.5,
+                "beta": 0.5,
+                "gamma": 0.0,
+                "temp": 2.0,
+                "mapping": "last_layer",
+                "description": "Logits-only KD"
+            },
+            "metrics": {
+                "time_min": 18.174763675530752,
+                "perplexity": 14.458577971212334,
+                "recovery_%": 89.13602255532645,
+                "arc_easy": 0.5005,
+                "hellaswag": 0.407,
+                "lambada_openai": 0.3115,
+                "piqa": 0.6333,
+                "winogrande": 0.5264,
+                "cap_retention_%": 89.27713556523047,
+                "overall_recovery_%": 89.20657906027846
+            },
+            "training_stats": {
+                "total_time_seconds": 1090.485820531845,
+                "final_loss": 1.7630114539194917,
+                "epochs_trained": 3
+            }
+        },
+        "selected_layer_logits_only": {
+            "type": "trained_student",
+            "config": {
+                "alpha": 0.5,
+                "beta": 0.5,
+                "gamma": 0.0,
+                "temp": 2.0,
+                "mapping": "original_indices",
+                "description": "Logits-only KD"
+            },
+            "metrics": {
+                "time_min": 18.161956465244295,
+                "perplexity": 13.97391905626518,
+                "recovery_%": 92.22753666818376,
+                "arc_easy": 0.5005,
+                "hellaswag": 0.4125,
+                "lambada_openai": 0.321,
+                "piqa": 0.6349,
+                "winogrande": 0.5367,
+                "cap_retention_%": 90.28674373217235,
+                "overall_recovery_%": 91.25714020017806
+            },
+            "training_stats": {
+                "total_time_seconds": 1090.485820531845,
+                "final_loss": 1.7630114539194917,
+                "epochs_trained": 3
+            }
+        },
+        "last_layer_features": {
+            "type": "trained_student",
+            "config": {
+                "alpha": 0.4,
+                "beta": 0.4,
+                "gamma": 0.2,
+                "temp": 2.0,
+                "mapping": "last_layer",
+                "description": "Standard Feature Alignment (Cosine)"
+            },
+            "metrics": {
+                "time_min": 18.478982440630595,
+                "perplexity": 14.33186984043947,
+                "recovery_%": 89.92407456307248,
+                "arc_easy": 0.4975,
+                "hellaswag": 0.412,
+                "lambada_openai": 0.3175,
+                "piqa": 0.6333,
+                "winogrande": 0.5367,
+                "cap_retention_%": 89.9639693739679,
+                "overall_recovery_%": 89.94402196852019
+            },
+            "training_stats": {
+                "total_time_seconds": 1108.7389464378357,
+                "final_loss": 1.4817018670550848,
+                "epochs_trained": 3
+            }
+        },
+        "selected_layer_features": {
+            "type": "trained_student",
+            "config": {
+                "alpha": 0.4,
+                "beta": 0.4,
+                "gamma": 0.2,
+                "temp": 2.0,
+                "mapping": "original_indices",
+                "description": "Standard Feature Alignment (Cosine)"
+            },
+            "metrics": {
+                "time_min": 18.478982440630595,
+                "perplexity": 14.307238043368779,
+                "recovery_%": 90.07889071624568,
+                "arc_easy": 0.4985,
+                "hellaswag": 0.413,
+                "lambada_openai": 0.3125,
+                "piqa": 0.6333,
+                "winogrande": 0.5296,
+                "cap_retention_%": 89.5848971625882,
+                "overall_recovery_%": 89.83189393941694
+            },
+            "training_stats": {
+                "total_time_seconds": 1108.757446050644,
+                "final_loss": 1.4463254766949152,
+                "epochs_trained": 3
+            }
+        },
+        "uniform_advanced_kd": {
+            "type": "trained_student",
+            "config": {
+                "alpha": 0.2,
+                "beta": 0.3,
+                "gamma": 0.3,
+                "delta": 0.2,
+                "skew": 0.5,
+                "mapping": "uniform",
+                "description": "Skew KLD + FDD (Trajectory & Derivative)"
+            },
+            "metrics": {
+                "time_min": 20.2296839872996,
+                "perplexity": 13.023979980004809,
+                "recovery_%": 98.95440058557683,
+                "arc_easy": 0.4855,
+                "hellaswag": 0.41,
+                "lambada_openai": 0.32,
+                "piqa": 0.6284,
+                "winogrande": 0.5304,
+                "cap_retention_%": 89.11199519591653,
+                "overall_recovery_%": 94.03319789074669
+            },
+            "training_stats": {
+                "total_time_seconds": 1213.781039237976,
+                "final_loss": 0.7557534043945499,
+                "epochs_trained": 3
+            }
+        },
+        "selected_advanced_kd": {
+            "type": "trained_student",
+            "config": {
+                "alpha": 0.2,
+                "beta": 0.3,
+                "gamma": 0.3,
+                "delta": 0.2,
+                "skew": 0.5,
+                "mapping": "original_indices",
+                "description": "Skew KLD + FDD (Trajectory & Derivative)"
+            },
+            "metrics": {
+                "time_min": 20.2296839872996,
+                "perplexity": 13.070088773290324,
+                "recovery_%": 98.60530823582809,
+                "arc_easy": 0.486,
+                "hellaswag": 0.4115,
+                "lambada_openai": 0.325,
+                "piqa": 0.6262,
+                "winogrande": 0.5209,
+                "cap_retention_%": 88.93559525596758,
+                "overall_recovery_%": 93.77045174589784
+            },
+            "training_stats": {
+                "total_time_seconds": 1213.781039237976,
+                "final_loss": 0.7557534043945499,
+                "epochs_trained": 3
+            }
+        }
+    }
+}
