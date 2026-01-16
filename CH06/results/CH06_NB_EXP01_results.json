@@ -1,7 +1,7 @@
 {
     "metadata": {
         "experiment_name": "Layer Mapping & Advanced KD Comparison",
-        "timestamp": "2026-01-14T07:19:26.599725",
+        "timestamp": "2026-01-16T12:37:17.823363",
         "versions": {
             "torch": "2.9.0+cu126"
         }
@@ -15,7 +15,7 @@
             "type": "baseline",
             "metrics": {
                 "time_min": 0.0,
-                "perplexity": 12.970958920775756,
+                "perplexity": 13.385269421207692,
                 "recovery_%": 100.0,
                 "arc_easy": 0.582,
                 "hellaswag": 0.474,
@@ -23,50 +23,24 @@
                 "piqa": 0.702,
                 "winogrande": 0.55,
                 "cap_retention_%": 100.0,
-                "overall_recovery_%": 100.0
+                "retention_%": 100.0,
+                "overall_retention_%": 100.0
             }
         },
         "student_pruned": {
             "type": "baseline",
             "metrics": {
                 "time_min": 0.0,
-                "perplexity": 121.9712014322044,
-                "recovery_%": 10.634443842865188,
+                "perplexity": 125.64550402631409,
+                "recovery_%": 0.0,
                 "arc_easy": 0.43,
                 "hellaswag": 0.404,
                 "lambada_openai": 0.184,
                 "piqa": 0.594,
                 "winogrande": 0.514,
                 "cap_retention_%": 77.87545787545787,
-                "overall_recovery_%": 44.254950859161525
-            }
-        },
-        "uniform_logits_only": {
-            "type": "trained_student",
-            "config": {
-                "alpha": 0.5,
-                "beta": 0.5,
-                "gamma": 0.0,
-                "temp": 2.0,
-                "mapping": "uniform",
-                "description": "Logits-only KD"
-            },
-            "metrics": {
-                "time_min": 4.060869570573171,
-                "perplexity": 21.576665877176975,
-                "recovery_%": 60.11567771689867,
-                "arc_easy": 0.492,
-                "hellaswag": 0.436,
-                "lambada_openai": 0.28,
-                "piqa": 0.622,
-                "winogrande": 0.532,
-                "cap_retention_%": 86.52014652014653,
-                "overall_recovery_%": 73.3179121185226
-            },
-            "training_stats": {
-                "total_time_seconds": 243.65217423439026,
-                "final_loss": 2.2838134765625,
-                "epochs_trained": 5
+                "retention_%": 10.65320205839152,
+                "overall_retention_%": 44.26432996692469
             }
         },
         "last_layer_logits_only": {
@@ -80,48 +54,21 @@
                 "description": "Logits-only KD"
             },
             "metrics": {
-                "time_min": 4.066100434462229,
-                "perplexity": 21.39922628441762,
-                "recovery_%": 60.61414907426295,
-                "arc_easy": 0.51,
-                "hellaswag": 0.436,
-                "lambada_openai": 0.274,
-                "piqa": 0.63,
+                "time_min": 3.6385690530141193,
+                "perplexity": 23.988158548202097,
+                "recovery_%": 90.5550801988863,
+                "arc_easy": 0.496,
+                "hellaswag": 0.432,
+                "lambada_openai": 0.276,
+                "piqa": 0.618,
                 "winogrande": 0.516,
-                "cap_retention_%": 86.66666666666666,
-                "overall_recovery_%": 73.6404078704648
+                "cap_retention_%": 85.64102564102564,
+                "retention_%": 55.799487044039545,
+                "overall_retention_%": 70.7202563425326
             },
             "training_stats": {
-                "total_time_seconds": 243.96602606773376,
-                "final_loss": 2.2828369140625,
-                "epochs_trained": 5
-            }
-        },
-        "selected_layer_logits_only": {
-            "type": "trained_student",
-            "config": {
-                "alpha": 0.5,
-                "beta": 0.5,
-                "gamma": 0.0,
-                "temp": 2.0,
-                "mapping": "original_indices",
-                "description": "Logits-only KD"
-            },
-            "metrics": {
-                "time_min": 4.060869570573171,
-                "perplexity": 21.44725794707901,
-                "recovery_%": 60.47840219379804,
-                "arc_easy": 0.504,
-                "hellaswag": 0.436,
-                "lambada_openai": 0.282,
-                "piqa": 0.624,
-                "winogrande": 0.518,
-                "cap_retention_%": 86.59340659340658,
-                "overall_recovery_%": 73.53590439360231
-            },
-            "training_stats": {
-                "total_time_seconds": 243.96602606773376,
-                "final_loss": 2.2828369140625,
+                "total_time_seconds": 218.31414318084717,
+                "final_loss": 2.343615301724138,
                 "epochs_trained": 5
             }
         },
@@ -136,20 +83,21 @@
                 "description": "Standard Feature Alignment (Cosine)"
             },
             "metrics": {
-                "time_min": 4.146257146199544,
-                "perplexity": 21.62154731311791,
-                "recovery_%": 59.99089118338077,
-                "arc_easy": 0.51,
+                "time_min": 3.719241221745809,
+                "perplexity": 23.44151945188047,
+                "recovery_%": 91.04201940602809,
+                "arc_easy": 0.496,
                 "hellaswag": 0.434,
-                "lambada_openai": 0.278,
-                "piqa": 0.634,
-                "winogrande": 0.536,
-                "cap_retention_%": 87.6190476190476,
-                "overall_recovery_%": 73.80496940121418
+                "lambada_openai": 0.282,
+                "piqa": 0.626,
+                "winogrande": 0.522,
+                "cap_retention_%": 86.44688644688644,
+                "retention_%": 57.10069028880264,
+                "overall_retention_%": 71.77378836784453
             },
             "training_stats": {
-                "total_time_seconds": 248.77542877197266,
-                "final_loss": 1.8917236328125,
+                "total_time_seconds": 223.15447330474854,
+                "final_loss": 1.8991109913793103,
                 "epochs_trained": 5
             }
         },
@@ -164,20 +112,21 @@
                 "description": "Standard Feature Alignment (Cosine)"
             },
             "metrics": {
-                "time_min": 4.146257146199544,
-                "perplexity": 21.547396950044774,
-                "recovery_%": 60.19733590487738,
-                "arc_easy": 0.5,
-                "hellaswag": 0.436,
-                "lambada_openai": 0.278,
-                "piqa": 0.626,
-                "winogrande": 0.52,
-                "cap_retention_%": 86.44688644688644,
-                "overall_recovery_%": 73.3221111758819
+                "time_min": 3.719241221745809,
+                "perplexity": 23.824398276022382,
+                "recovery_%": 90.70095578230706,
+                "arc_easy": 0.492,
+                "hellaswag": 0.43,
+                "lambada_openai": 0.272,
+                "piqa": 0.634,
+                "winogrande": 0.518,
+                "cap_retention_%": 85.93406593406593,
+                "retention_%": 56.18303247842798,
+                "overall_retention_%": 71.05854920624695
             },
             "training_stats": {
-                "total_time_seconds": 248.7377851009369,
-                "final_loss": 1.8433837890625,
+                "total_time_seconds": 222.14044046401978,
+                "final_loss": 1.8778286637931034,
                 "epochs_trained": 5
             }
         },
@@ -193,20 +142,21 @@
                 "description": "Skew KLD + FDD (Trajectory & Derivative)"
             },
             "metrics": {
-                "time_min": 4.534594436486562,
-                "perplexity": 19.046066732421114,
-                "recovery_%": 68.10308450036027,
+                "time_min": 4.060366837183635,
+                "perplexity": 21.380170572072135,
+                "recovery_%": 92.87824296912633,
                 "arc_easy": 0.468,
-                "hellaswag": 0.438,
-                "lambada_openai": 0.29,
-                "piqa": 0.628,
-                "winogrande": 0.522,
-                "cap_retention_%": 85.93406593406593,
-                "overall_recovery_%": 77.0185752172131
+                "hellaswag": 0.44,
+                "lambada_openai": 0.304,
+                "piqa": 0.622,
+                "winogrande": 0.536,
+                "cap_retention_%": 86.81318681318682,
+                "retention_%": 62.605999218229854,
+                "overall_retention_%": 74.70959301570834
             },
             "training_stats": {
-                "total_time_seconds": 272.0756661891937,
-                "final_loss": 0.843572058249265,
+                "total_time_seconds": 243.62201023101807,
+                "final_loss": 0.9098314247254667,
                 "epochs_trained": 5
             }
         },
@@ -222,20 +172,21 @@
                 "description": "Skew KLD + FDD (Trajectory & Derivative)"
             },
             "metrics": {
-                "time_min": 4.534594436486562,
-                "perplexity": 18.044358046377248,
-                "recovery_%": 71.88373721823773,
-                "arc_easy": 0.486,
-                "hellaswag": 0.432,
-                "lambada_openai": 0.296,
-                "piqa": 0.616,
-                "winogrande": 0.512,
-                "cap_retention_%": 85.7875457875458,
-                "overall_recovery_%": 78.83564150289176
+                "time_min": 4.036702473958333,
+                "perplexity": 22.053236725699776,
+                "recovery_%": 92.27868413514095,
+                "arc_easy": 0.464,
+                "hellaswag": 0.436,
+                "lambada_openai": 0.28,
+                "piqa": 0.624,
+                "winogrande": 0.522,
+                "cap_retention_%": 85.2014652014652,
+                "retention_%": 60.69526023637676,
+                "overall_retention_%": 72.94836271892098
             },
             "training_stats": {
-                "total_time_seconds": 272.0756661891937,
-                "final_loss": 0.843572058249265,
+                "total_time_seconds": 242.2021484375,
+                "final_loss": 0.8902157247066498,
                 "epochs_trained": 5
             }
         }
