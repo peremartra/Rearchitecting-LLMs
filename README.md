@@ -7,12 +7,20 @@
 [![optiPfair Downloads](https://img.shields.io/pypi/dm/optipfair?label=optiPfair%20downloads)](https://pypi.org/project/optipfair/)
 ---
 
-Are you using LLMs, or are you deciding how they should work? That's the difference between a user and an architect.
-In this repository, you'll learn to go beyond using APIs or Frameworks; you'll learn to redesign the core of language models to make them faster, cheaper, and, above all, smarter for your specific use case.
+Tailoring LLM Architectures addresses the growing need for AI professionals who understand how LLMs work at a fundamental level—professionals who can create hyper-efficient models tailored to specific data and tasks rather than relying on one-size-fits-all solutions.
 
-You'll get to control what happens inside a model to the point where you'll be able to modify unwanted responses by changing just a few of the model's neurons.
+The industry is shifting away from generic, closed-source models toward open-source alternatives that offer better stability, data privacy, lower operational costs, and competitive differentiation that proprietary APIs cannot provide. However, this transition faces a critical bottleneck: a shortage of engineers equipped with the deep architectural knowledge required to optimize these models effectively.
 
-This project is an advanced spin-off of the popular [Large Language Model Notebooks Course](https://github.com/peremartra/Large-Language-Model-Notebooks-Course) (+1800 stars), focused exclusively on optimization and re-architecture techniques that will allow you to go beyond traditional fine-tuning.
+This is where Tailoring LLM Architectures comes in. The book follows a systematic optimization pipeline inspired by the methodologies used by companies like [Nvidia](https://arxiv.org/abs/2407.14679) and Mistral when building their own models, but adapted specifically for creating Small Language Models (SLMs) from existing open-source foundations. You'll learn to:
+
+* Surgically optimize model architectures through depth and width pruning
+* Recover lost knowledge using targeted distillation techniques
+* Specialize models for your specific domain and use case
+* Measure and validate every optimization decision 
+
+![alt text](Images/Ch01_F02_DataTailoringPipeline.drawio.png)
+The Tailoring Pipeline
+The domain-specific dataset guides the calibration of the base model, informs structural optimization decisions, and drives the final specialization through LoRA fine-tuning. A general dataset supports Knowledge Recovery, ensuring the pruned model retains broad capabilities before domain-specific specialization. This dual approach optimizes each phase for the project's specific objectives.
 
 ## 🧠 Your Interactive Technical Companion: NotebookLM Space
 
@@ -38,66 +46,13 @@ Perfect for:
 
 > 💡 **Pro tip**: Use NotebookLM for quick queries and experimentation. For structured, in-depth learning, the book remains your best companion.
 
-## The Journey: Your Path from User to LLM Architect
-Being an LLM architect is a process. This repository is structured to guide you through the journey, from fundamentals to advanced techniques.
-
-**Understanding the Rearchitecting Pipeline**
-* The Challenge: Understand the complete workflow to transform a generic model into a specialized one.
-* Your Mission: Assimilate the three key phases of the process: Structural Optimization, Knowledge Recovery, and Specialization.
-* Key Resource: (Under construction)
-
-**Your First Surgery - Structural Pruning**
-* The Challenge: Perform your first structural modification on a model.
-* Your Mission: Learn to identify and remove redundant components from an LLM (Depth Pruning) to make it lighter and faster, and then use Knowledge Distillation to "heal" the model and restore its performance.
-* Key Resources: [CH02/CH02_NB01_Depth_pruning_evaluation.ipynb](https://github.com/peremartra/Tailoring-LLM-Architectures/blob/main/CH02/CH02_NB01_Depth_pruning_evaluation.ipynb) and [CH02/CH02_NB02_Knowledge_Recovery.ipynb](https://github.com/peremartra/Tailoring-LLM-Architectures/blob/main/CH02/CH02_NB02_Knowledge_Recovery.ipynb)
-
-**From "Black Box" to Model Anatomy**
-* The Challenge: Stop seeing LLMs as a magic black box.
-* Your Mission: Understand its internal structure, how information flows, and where its capabilities truly reside. You'll start thinking in terms of layers, blocks, modules, and neurons, not just prompts and responses.
-* Key Resource: [CH03/CH03_NB01_Model_structures.ipynb](https://github.com/peremartra/Tailoring-LLM-Architectures/blob/main/CH03/CH03_NB01_Model_structures.ipynb)
-
-🆕 **Data-Driven Depth Pruning** 🆕
-* The Challenge: Move beyond random layer removal to intelligent, data-driven pruning decisions.
-* Your Mission: Master PyTorch hooks to analyze layer importance using cosine similarity. Learn to identify which layers contribute most to your specific task and create specialized models optimized for different data types (complex vs. simple text).
-* What You'll Build: Two optimized models—one for complex text (WikiText) and one for simple text (SMS)—each achieving 11-13% speedup while maintaining task-specific performance.
-* Key Insight: Layer importance varies dramatically by task complexity. What's essential for deep reasoning may be dead weight for simple classification.
-* Key Resource: [CH04/CH04_NB01_Cosine_Similarity.ipynb](https://github.com/peremartra/Tailoring-LLM-Architectures/blob/main/CH04/CH04_NB01_Cosine_Similarity.ipynb)
-
-**Diving deeper into structural optimization.**
-* The Challenge: Adapt the model's structure to its mission and the data it will use.
-* Your Mission: Implement depth and width pruning techniques on modern architectures.
-
-**Creating a Specialist with LoRA.**
-* The Challenge: Create a domain-specialist model.
-* Your Mission: Implement specialized fine-tuning with LoRA on SLMs.
-
-**Controlling the Information Flow - Attention Bypass**
-* The Challenge: Go beyond static removal and start managing the information flow dynamically.
-* Your Mission: Implement bypass mechanisms in the attention layers, allowing the model to selectively "ignore" calculations that are not necessary for certain tasks, achieving a drastic acceleration in inference.
-
-**Mastery - Adaptive Attention & Fair Pruning**
-* The Challenge: Build systems that are not only efficient, but also aware and fair.
-Your Mission:
-* Adaptive Attention Bypass: Create systems that decide in real-time which attention layers to activate, adapting to the complexity of each input.
-* Fair Pruning: Analyze the model's internal activations to identify and prune neurons that contribute to unwanted biases, building models that are efficient and ethical from their architecture.
-
-## Your Architect's Toolkit
-Inside this repository you'll find the concepts and code to master re-architecture techniques. To apply these techniques in practice and facilitate their use in production, all the methodologies are being consolidated into the [optiPfair](https://github.com/peremartra/optipfair) support library.
-
-Tools you'll master:
-
-* **Structural Analysis**: Visualization and understanding of architectures like LLaMA, Gemma, and Mistral.
-* **Structural Pruning**: Depth Pruning (removing layers) and Width Pruning (reducing neurons).
-* **Knowledge Recovery**: Knowledge Distillation to re-train optimized models.
-* **Advanced Attention Mechanisms**: Implementation of bypass techniques for ultra-fast inference.
-* **Activation Analysis**: The foundation for understanding internal behavior and applying Fair Pruning.
-
 ## Start Building
 The journey begins with the first step. We recommend you start with the notebooks from Chapter 2, 3, and 4 to build a solid foundation before tackling the more advanced techniques:
 
 1. **Chapter 2**: Learn the basics of depth pruning and knowledge recovery
 2. **Chapter 3**: Understand modern transformer architectures (Llama, Gemma, Qwen)
-3. **Chapter 4**: Master data-driven layer selection using cosine similarity 🆕
+3. **Chapter 4**: Master data-driven layer selection using cosine similarity
+4. **Chapter 5**: Master SOTA Data driven width pruning in GLU architectures
 
 Stop being a mere user. It's time to become an architect.
 
