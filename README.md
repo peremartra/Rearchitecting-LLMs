@@ -11,7 +11,9 @@ Tailoring LLM Architectures addresses the growing need for AI professionals who 
 
 The industry is shifting away from generic, closed-source models toward open-source alternatives that offer better stability, data privacy, lower operational costs, and competitive differentiation that proprietary APIs cannot provide. However, this transition faces a critical bottleneck: a shortage of engineers equipped with the deep architectural knowledge required to optimize these models effectively.
 
-This is where Tailoring LLM Architectures comes in. The book follows a systematic optimization pipeline inspired by the methodologies used by companies like [Nvidia](https://arxiv.org/abs/2407.14679) and Mistral when building their own models, but adapted specifically for creating Small Language Models (SLMs) from existing open-source foundations. You'll learn to:
+The book teaches **industry-grade optimization techniques** for transforming large pre-trained models into efficient Small Language Models (SLMs). These methodologies—including depth pruning, width pruning in GLU architectures, and knowledge distillation—are the same approaches used by companies like [**Nvidia**](https://arxiv.org/abs/2407.14679) (Minitron family) and [**Mistral**](https://arxiv.org/abs/2601.08584) (Ministral family) to create production-ready model families.
+
+Beyond these foundational techniques, the book introduces **original methodologies** like Fair Pruning (bias-aware optimization) and Adaptive Attention Bypass (dynamic inference), combining industry best practices with cutting-edge research. You'll learn to apply all these techniques to open-source foundations like Llama, Gemma, and Qwen, with hands-on notebooks that run on Google Colab's free tier.
 
 * Surgically optimize model architectures through depth and width pruning
 * Recover lost knowledge using targeted distillation techniques
