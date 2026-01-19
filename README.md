@@ -19,8 +19,8 @@ This is where Tailoring LLM Architectures comes in. The book follows a systemati
 * Measure and validate every optimization decision 
 
 ![alt text](Images/Ch01_F02_DataTailoringPipeline.drawio.png)
-The Tailoring Pipeline
-The domain-specific dataset guides the calibration of the base model, informs structural optimization decisions, and drives the final specialization through LoRA fine-tuning. A general dataset supports Knowledge Recovery, ensuring the pruned model retains broad capabilities before domain-specific specialization. This dual approach optimizes each phase for the project's specific objectives.
+
+*The Tailoring Pipeline. The domain-specific dataset guides the calibration of the base model, informs structural optimization decisions, and drives the final specialization through LoRA fine-tuning. A general dataset supports Knowledge Recovery, ensuring the pruned model retains broad capabilities before domain-specific specialization. This dual approach optimizes each phase for the project's specific objectives.*
 
 ## 🧠 Your Interactive Technical Companion: NotebookLM Space
 
@@ -45,14 +45,6 @@ Perfect for:
 **[→ Launch NotebookLM Space](https://notebooklm.google.com/notebook/a059766a-14bf-4d75-8840-b05a79be680e)**
 
 > 💡 **Pro tip**: Use NotebookLM for quick queries and experimentation. For structured, in-depth learning, the book remains your best companion.
-
-## Start Building
-The journey begins with the first step. We recommend you start with the notebooks from Chapter 2, 3, and 4 to build a solid foundation before tackling the more advanced techniques:
-
-1. **Chapter 2**: Learn the basics of depth pruning and knowledge recovery
-2. **Chapter 3**: Understand modern transformer architectures (Llama, Gemma, Qwen)
-3. **Chapter 4**: Master data-driven layer selection using cosine similarity
-4. **Chapter 5**: Master SOTA Data driven width pruning in GLU architectures
 
 Stop being a mere user. It's time to become an architect.
 
