@@ -1,5 +1,5 @@
-# Tailoring LLM Architectures. 
-**Surgical Optimization Beyond Fine-Tuning**
+# Rearchitecting LLMs. 
+**Structural techniques for efficient models**
 
 [![GitHub stars](https://img.shields.io/github/stars/peremartra/Tailoring-LLM-Architectures?style=social)](https://github.com/peremartra/Tailoring-LLM-Architectures/stargazers)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -7,7 +7,7 @@
 [![optiPfair Downloads](https://img.shields.io/pypi/dm/optipfair?label=optiPfair%20downloads)](https://pypi.org/project/optipfair/)
 ---
 
-Tailoring LLM Architectures addresses the growing need for AI professionals who understand how LLMs work at a fundamental level—professionals who can create hyper-efficient models tailored to specific data and tasks rather than relying on one-size-fits-all solutions.
+Rearchitecting LLMs addresses the growing need for AI professionals who understand how LLMs work at a fundamental level—professionals who can create hyper-efficient models tailored to specific data and tasks rather than relying on one-size-fits-all solutions.
 
 The industry is shifting away from generic, closed-source models toward open-source alternatives that offer better stability, data privacy, lower operational costs, and competitive differentiation that proprietary APIs cannot provide. However, this transition faces a critical bottleneck: a shortage of engineers equipped with the deep architectural knowledge required to optimize these models effectively.
 
@@ -22,7 +22,7 @@ Beyond these foundational techniques, the book introduces **original methodologi
 
 ![alt text](Images/Ch01_F02_DataTailoringPipeline.drawio.png)
 
-*The Tailoring Pipeline. The domain-specific dataset guides the calibration of the base model, informs structural optimization decisions, and drives the final specialization through LoRA fine-tuning. A general dataset supports Knowledge Recovery, ensuring the pruned model retains broad capabilities before domain-specific specialization. This dual approach optimizes each phase for the project's specific objectives.*
+*The Rearchitecting Pipeline. The domain-specific dataset guides the calibration of the base model, informs structural optimization decisions, and drives the final specialization through LoRA fine-tuning. A general dataset supports Knowledge Recovery, ensuring the pruned model retains broad capabilities before domain-specific specialization. This dual approach optimizes each phase for the project's specific objectives.*
 
 ## 🧠 Your Interactive Technical Companion: NotebookLM Space
 
