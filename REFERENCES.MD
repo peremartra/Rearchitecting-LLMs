@@ -44,6 +44,9 @@ Wang, Y., Ma, M., Wang, Z., Chen, J., Fan, H., Shan, L., Yang, Q., Xu, D., Liu, 
 Martra, P. (2025). **Fragile Knowledge, Robust Instruction-Following: The Width Pruning Dichotomy in Llama-3.2.** https://www.techrxiv.org/users/1001026/articles/1361522-fragile-knowledge-robust-instruction-following-the-width-pruning-dichotomy-in-llama-3-2
 * Study the effect of pruning on the GLU structure of Llama-3.2 models.
 
+## Chapter 5: **Knowledge recovery**
+Tian, H., Xu, B., & Li, S. (2025). Distillation Dynamics: Towards Understanding Feature-Based Distillation in Vision Transformers. ArXiv. https://arxiv.org/abs/2511.06848
 
+Ko, J., Chen, T., Kim, S., Ding, T., Liang, L., Zharkov, I., & Yun, S. Y. (2025). DistiLLM-2: A Contrastive Approach Boosts the Distillation of LLMs. ArXiv. https://arxiv.org/abs/2503.07067
 
 
