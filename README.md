@@ -68,3 +68,22 @@ If you find these techniques useful, consider:
 - 💬 Opening Discussions with your questions
 
 Every star helps us reach more LLM engineers who can benefit from this work.
+
+## Citation
+
+If you find this repository or the techniques described in the book useful, please cite it as follows:
+
+**APA:**
+Martra, P. (2026). *Rearchitecting LLMs: Structural techniques for efficient models*. Manning Publications. ISBN 9781633434332.
+
+**BibTeX:**
+```bibtex
+@book{martra2026rearchitecting,
+  title={Rearchitecting LLMs: Structural techniques for efficient models},
+  author={Martra, Pere},
+  isbn={9781633434332},
+  year={2026},
+  publisher={Manning Publications},
+  url={[https://www.manning.com/books/rearchitecting-llms](https://www.manning.com/books/rearchitecting-llms)},
+  note={Manning Early Access Program (MEAP)}
+}
