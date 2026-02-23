@@ -49,4 +49,7 @@ Tian, H., Xu, B., & Li, S. (2025). Distillation Dynamics: Towards Understanding 
 
 Ko, J., Chen, T., Kim, S., Ding, T., Liang, L., Zharkov, I., & Yun, S. Y. (2025). DistiLLM-2: A Contrastive Approach Boosts the Distillation of LLMs. ArXiv. https://arxiv.org/abs/2503.07067
 
+Sreenivas, S. T., Muralidharan, S., Joshi, R., Chochowski, M., Mahabaleshwarkar, A. S., Shen, G., Zeng, J., Chen, Z., Suhara, Y., Diao, S., Yu, C., Chen, W. C., Ross, H., Olabiyi, O., Aithal, A., Kuchaiev, O., Korzekwa, D., Molchanov, P., Patwary, M., . . .  Catanzaro, B. (2024). LLM Pruning and Distillation in Practice: The Minitron Approach. ArXiv. [https://arxiv.org/abs/2408.11796](https://arxiv.org/abs/2408.11796)
+
+Liu, A. H., Khandelwal, K., Subramanian, S., Jouault, V., Rastogi, A., Sadé, A., Jeffares, A., Jiang, A., Cahill, A., Gavaudan, A., Sablayrolles, A., Héliou, A., You, A., Ehrenberg, A., Lo, A., Eliseev, A., Calvi, A., Sooriyarachchi, A., Bout, B., . . .  Ramzi, Z. (2026). Ministral 3. ArXiv. [https://arxiv.org/abs/2601.08584](https://arxiv.org/abs/2601.08584)
 
