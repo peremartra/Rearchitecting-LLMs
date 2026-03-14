@@ -1,0 +1,28 @@
+name: Clean notebook widgets metadata
+
+on:
+  push:
+    paths:
+      - '**.ipynb'
+
+jobs:
+  clean:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Clean metadata.widgets from notebooks
+        run: python3 clean_notebooks_ci.py
+
+      - name: Commit changes if any
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git diff --cached --quiet && echo "No changes" || (
+            git commit --amend --no-edit
+            git push --force-with-lease
+          )
