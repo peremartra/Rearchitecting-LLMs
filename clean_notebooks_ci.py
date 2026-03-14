@@ -1,19 +1,18 @@
 #!/usr/bin/env python3
 """
-Removes metadata.widgets from all notebooks in the repo.
-Only files that are actually modified get staged, so the amend
-only touches notebooks that had the widget metadata issue.
+Removes metadata.widgets only from notebooks changed in the current push.
 """
 import json, subprocess
 from pathlib import Path
 
-modified = []
+# Get only notebooks changed in this push (requires fetch-depth: 2)
+result = subprocess.run(
+    ["git", "diff", "HEAD~1", "HEAD", "--name-only", "--diff-filter=ACM"],
+    capture_output=True, text=True
+)
+notebooks = [Path(p) for p in result.stdout.splitlines() if p.endswith(".ipynb")]
 
-for path in Path(".").rglob("*.ipynb"):
-    # Skip hidden directories like .ipynb_checkpoints
-    if any(part.startswith(".") for part in path.parts):
-        continue
-
+for path in notebooks:
     try:
         nb = json.loads(path.read_text(encoding="utf-8"))
     except (json.JSONDecodeError, FileNotFoundError):
@@ -24,8 +23,6 @@ for path in Path(".").rglob("*.ipynb"):
         del nb["metadata"]["widgets"]
         path.write_text(json.dumps(nb, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
         subprocess.run(["git", "add", str(path)])
-        modified.append(path)
         print(f"  ✔ metadata.widgets removed: {path}")
-
-if not modified:
-    print("  ✔ No changes needed.")
+    else:
+        print(f"  ✔ No changes needed: {path}")
