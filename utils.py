@@ -661,7 +661,7 @@ def get_output(model, tokenizer, prompt, max_new_tokens=100):
     )
 
 
-def measure_memory_allocation(model, tokenizer, prompt, max_new_tokens=100, cache_config=None):
+def measure_memory_allocation(model, tokenizer, prompt, max_new_tokens=100, cache_config=None, cache_implementation=None):
     """
     Measures static VRAM, dynamic VRAM delta, and throughput for a generation run.
 
@@ -705,6 +705,8 @@ def measure_memory_allocation(model, tokenizer, prompt, max_new_tokens=100, cach
     )
     if cache_config is not None:
         generate_kwargs["cache_config"] = cache_config
+    if cache_implementation is not None:
+        generate_kwargs["cache_implementation"] = cache_implementation
 
     start_time = time.time()
     with torch.no_grad():
