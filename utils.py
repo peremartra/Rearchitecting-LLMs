@@ -631,3 +631,98 @@ def measure_energy_consumption(model, tokenizer, data_source, idle_power_watts=N
         "efficiency_joules_per_token": float(joules_per_token),
         "co2_emissions_kg": co2_raw_kg
     }
+
+
+def get_output(model, tokenizer, prompt, max_new_tokens=100):
+    """
+    Generate text from a model given a prompt, returning only the new tokens.
+
+    Args:
+        model: The loaded Hugging Face model.
+        tokenizer: The associated tokenizer.
+        prompt (str): Input text prompt.
+        max_new_tokens (int): Maximum number of new tokens to generate.
+
+    Returns:
+        str: The generated text (excluding the input prompt).
+    """
+    device = next(model.parameters()).device
+    inputs = tokenizer(prompt, return_tensors="pt").to(device)
+    with torch.no_grad():
+        outputs = model.generate(
+            **inputs,
+            max_new_tokens=max_new_tokens,
+            do_sample=False,
+            pad_token_id=tokenizer.eos_token_id,
+        )
+    return tokenizer.decode(
+        outputs[0][inputs["input_ids"].shape[1]:],
+        skip_special_tokens=True
+    )
+
+
+def measure_memory_allocation(model, tokenizer, prompt, max_new_tokens=100, cache_config=None):
+    """
+    Measures static VRAM, dynamic VRAM delta, and throughput for a generation run.
+
+    Static VRAM reflects the model's memory footprint before generation starts.
+    Dynamic delta captures the additional memory consumed during generation,
+    which is dominated by the KV cache. Throughput measures generation speed.
+
+    Args:
+        model: The loaded Hugging Face model.
+        tokenizer: The associated tokenizer.
+        prompt (str): Input text prompt.
+        max_new_tokens (int): Number of tokens to generate.
+        cache_config: Optional QuantizedCacheConfig for KV cache quantization.
+            When provided, it is forwarded to model.generate() so that the KV
+            cache is materialized in the requested quantized format.
+
+    Returns:
+        dict with:
+            - static_vram_mb (float): VRAM before generation (MB).
+            - dynamic_delta_mb (float): Peak VRAM increase during generation (MB).
+            - throughput_tokens_s (float): Tokens generated per second.
+    """
+    device = next(model.parameters()).device
+
+    inputs = tokenizer(prompt, return_tensors="pt").to(device)
+    input_len = inputs["input_ids"].shape[1]
+
+    # Settle memory and reset peak tracker so the delta is clean
+    if torch.cuda.is_available():
+        torch.cuda.synchronize()
+        torch.cuda.reset_peak_memory_stats()
+        static_vram = torch.cuda.memory_allocated() / (1024 ** 2)
+    else:
+        static_vram = 0.0
+
+    generate_kwargs = dict(
+        **inputs,
+        max_new_tokens=max_new_tokens,
+        do_sample=False,
+        pad_token_id=tokenizer.eos_token_id,
+    )
+    if cache_config is not None:
+        generate_kwargs["cache_config"] = cache_config
+
+    start_time = time.time()
+    with torch.no_grad():
+        outputs = model.generate(**generate_kwargs)
+    if torch.cuda.is_available():
+        torch.cuda.synchronize()
+    elapsed = time.time() - start_time
+
+    if torch.cuda.is_available():
+        peak_vram = torch.cuda.max_memory_allocated() / (1024 ** 2)
+    else:
+        peak_vram = 0.0
+
+    num_new_tokens = outputs.shape[1] - input_len
+    throughput = num_new_tokens / elapsed if elapsed > 0 else 0.0
+
+    return {
+        "static_vram_mb": round(static_vram, 2),
+        "dynamic_delta_mb": round(peak_vram - static_vram, 2),
+        "throughput_tokens_s": round(throughput, 2),
+    }
