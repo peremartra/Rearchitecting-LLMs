@@ -726,10 +726,6 @@ def measure_memory_allocation(model, tokenizer, prompt, max_new_tokens=100, cach
     # Decode only the newly generated tokens into readable text
     generated_text = tokenizer.decode(outputs[0][input_len:], skip_special_tokens=True)
     
-    # Print the prompt and the model's response for live debugging
-    print(f"\n[Test Prompt]: {prompt}")
-    print(f"[Generated Response]: {generated_text}\n")
-
     # Return the updated dictionary including the generated text
     return {
         "static_vram_mb": round(static_vram, 2),
