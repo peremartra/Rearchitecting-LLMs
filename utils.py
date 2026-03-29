@@ -727,4 +727,5 @@ def measure_memory_allocation(model, tokenizer, prompt, max_new_tokens=100, cach
         "static_vram_mb": round(static_vram, 2),
         "dynamic_delta_mb": round(peak_vram - static_vram, 2),
         "throughput_tokens_s": round(throughput, 2),
+        "generated_text": generated_text,
     }
