@@ -1,7 +1,11 @@
 #try:
 import lm_eval
 import transformers
-import optipfair
+try:
+    import optipfair
+except Exception:
+    # Keep utilities importable when optional pruning deps are unavailable
+    optipfair = None
 import torch
 import json
 import gc
