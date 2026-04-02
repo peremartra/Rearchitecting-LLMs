@@ -1,0 +1,83 @@
+{
+  "config": {
+    "MODEL_NAME": "meta-llama/Llama-3.2-1B",
+    "DEVICE": "cuda",
+    "BATCH_SIZE": 8,
+    "MAX_NEW_TOKENS": 64,
+    "BENCHMARK_LIMIT": 400,
+    "BENCHMARK_TASKS": [
+      "arc_easy",
+      "winogrande",
+      "hellaswag",
+      "lambada_openai",
+      "piqa"
+    ]
+  },
+  "benchmarks": {
+    "arc_easy": {
+      "accuracy": "0.6500",
+      "acc_norm": "0.6200"
+    },
+    "hellaswag": {
+      "accuracy": "0.4475",
+      "acc_norm": "0.5550"
+    },
+    "lambada_openai": {
+      "perplexity": "5.90",
+      "accuracy": "0.5900"
+    },
+    "piqa": {
+      "accuracy": "0.7400",
+      "acc_norm": "0.7600"
+    },
+    "winogrande": {
+      "accuracy": "0.6025"
+    }
+  },
+  "performance_memory": {
+    "per_prompt": [
+      {
+        "static_vram_mb": 2366.26,
+        "dynamic_delta_mb": 3.54,
+        "throughput_tokens_s": 39.96,
+        "generated_text": " Explain how it is different from model averaging. Explain how it is different from model selection. Explain how it is different from model selection.\nExplain what model pruning is in one paragraph. Explain how it is different from model averaging. Explain how it is different from model selection. Explain how it is different from model selection.\n",
+        "prompt": "Explain what model pruning is in one paragraph."
+      },
+      {
+        "static_vram_mb": 2366.26,
+        "dynamic_delta_mb": 3.64,
+        "throughput_tokens_s": 47.61,
+        "generated_text": " What is the difference between the two methods?\nThe difference between the two methods is that the first method uses the cache to store the previous values of the input, and the second method uses the cache to store the previous values of the output. The first method is faster because it does not need to calculate the previous values of",
+        "prompt": "Summarize why KV cache improves autoregressive generation speed."
+      },
+      {
+        "static_vram_mb": 2366.26,
+        "dynamic_delta_mb": 3.57,
+        "throughput_tokens_s": 47.65,
+        "generated_text": " Which do you think is more important?\nThe first tradeoff is between model quality and inference efficiency. The second tradeoff is between model quality and the number of parameters. The third tradeoff is between model quality and the number of observations.\nThe first tradeoff is between model quality and inference efficiency. The second tradeoff",
+        "prompt": "List three tradeoffs between model quality and inference efficiency."
+      }
+    ],
+    "summary": {
+      "throughput_tokens_s_avg": 45.07333333333333,
+      "throughput_tokens_s_min": 39.96,
+      "throughput_tokens_s_max": 47.65,
+      "static_vram_mb_avg": 2366.26,
+      "dynamic_delta_mb_avg": 3.5833333333333335
+    }
+  },
+  "energy": {
+    "duration_sec": 5.3184332847595215,
+    "total_tokens": 247,
+    "num_unique_samples": 4,
+    "num_runs_per_sample": 1,
+    "total_measurements": 4,
+    "energy_raw_kwh": 0.0001814388470180439,
+    "energy_idle_correction_kwh": 0.00013964720463579682,
+    "energy_net_kwh": 4.1791642382247094e-05,
+    "efficiency_joules_per_token": 0.6091089577979333,
+    "co2_emissions_kg": 8.541832471569577e-05,
+    "energy_joules": 150.44991257608953,
+    "joules_per_token": 0.6091089577979333
+  }
+}
