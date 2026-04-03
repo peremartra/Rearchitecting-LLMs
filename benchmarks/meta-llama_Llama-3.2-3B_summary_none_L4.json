@@ -1,0 +1,90 @@
+{
+  "config": {
+    "MODEL_NAME": "meta-llama/Llama-3.2-3B",
+    "DEVICE": "cuda",
+    "BATCH_SIZE": 8,
+    "MAX_NEW_TOKENS": 64,
+    "BENCHMARK_LIMIT": null,
+    "BENCHMARK_TASKS": [
+      "arc_easy",
+      "winogrande",
+      "hellaswag",
+      "lambada_openai",
+      "piqa"
+    ]
+  },
+  "benchmarks": {
+    "arc_easy": {
+      "accuracy": "0.7479",
+      "acc_norm": "0.7180"
+    },
+    "hellaswag": {
+      "accuracy": "0.5572",
+      "acc_norm": "0.7405"
+    },
+    "lambada_openai": {
+      "perplexity": "3.88",
+      "accuracy": "0.6969"
+    },
+    "piqa": {
+      "accuracy": "0.7639",
+      "acc_norm": "0.7813"
+    },
+    "winogrande": {
+      "accuracy": "0.6961"
+    }
+  },
+  "performance_memory": {
+    "per_prompt": [
+      {
+        "static_vram_mb": 6136.46,
+        "dynamic_delta_mb": 9.32,
+        "throughput_tokens_s": 26.88,
+        "generated_text": " What is the difference between model pruning and feature selection? What is the difference between model pruning and feature extraction? What is the difference between model pruning and feature reduction? What is the difference between model pruning and feature elimination? What is the difference between model pruning and feature selection? What is the difference between model pruning and feature",
+        "prompt": "Explain what model pruning is in one paragraph."
+      },
+      {
+        "static_vram_mb": 6136.46,
+        "dynamic_delta_mb": 9.65,
+        "throughput_tokens_s": 25.69,
+        "generated_text": " What is the difference between the two methods of generating the next word? What is the difference between the two methods of generating the next word? What is the difference between the two methods of generating the next word? What is the difference between the two methods of generating the next word? What is the difference between the two methods",
+        "prompt": "Summarize why KV cache improves autoregressive generation speed."
+      },
+      {
+        "static_vram_mb": 6136.46,
+        "dynamic_delta_mb": 9.43,
+        "throughput_tokens_s": 25.63,
+        "generated_text": " What are the implications of these tradeoffs for the design of a machine learning system?\nThe tradeoffs between model quality and inference efficiency are:\n1. Model complexity: A more complex model may have better accuracy but also require more time and resources to train and infer.\n2. Model size: A smaller model may be faster",
+        "prompt": "List three tradeoffs between model quality and inference efficiency."
+      }
+    ],
+    "summary": {
+      "throughput_tokens_s_avg": 26.066666666666666,
+      "throughput_tokens_s_min": 25.63,
+      "throughput_tokens_s_max": 26.88,
+      "static_vram_mb_avg": 6136.46,
+      "dynamic_delta_mb_avg": 9.466666666666667
+    }
+  },
+  "energy": {
+    "duration_sec": 9.299153089523315,
+    "total_tokens": 256,
+    "num_unique_samples": 4,
+    "num_runs_per_sample": 1,
+    "total_measurements": 4,
+    "energy_raw_kwh": 0.00034557654379661424,
+    "energy_idle_correction_kwh": 0.00024558531878397436,
+    "energy_net_kwh": 9.999122501263988e-05,
+    "efficiency_joules_per_token": 1.4061266017402483,
+    "co2_emissions_kg": 0.00016269156201820145,
+    "energy_joules": 359.96841004550356,
+    "joules_per_token": 1.4061266017402483
+  },
+  "gpu_hardware": {
+    "gpu_name": "NVIDIA L4",
+    "total_memory_gb": 22.03,
+    "compute_capability": "8.9",
+    "cuda_version": "12.8",
+    "reserved_memory_mb": 6930.0
+  }
+}
