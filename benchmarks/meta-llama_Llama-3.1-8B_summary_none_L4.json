@@ -1,0 +1,105 @@
+{
+  "config": {
+    "MODEL_NAME": "meta-llama/Llama-3.1-8B",
+    "DEVICE": "cuda",
+    "BATCH_SIZE": 16,
+    "MAX_NEW_TOKENS": 64,
+    "BENCHMARK_LIMIT": null,
+    "BENCHMARK_TASKS": [
+      "arc_easy",
+      "winogrande",
+      "hellaswag",
+      "lambada_openai",
+      "piqa"
+    ]
+  },
+  "benchmarks": {
+    "arc_easy": {
+      "accuracy": "0.8102",
+      "acc_norm": "0.7997"
+    },
+    "hellaswag": {
+      "accuracy": "0.5953",
+      "acc_norm": "0.7833"
+    },
+    "lambada_openai": {
+      "perplexity": "3.35",
+      "accuracy": "0.7341"
+    },
+    "piqa": {
+      "accuracy": "0.7884",
+      "acc_norm": "0.8079"
+    },
+    "winogrande": {
+      "accuracy": "0.7324"
+    }
+  },
+  "performance_memory": {
+    "per_prompt": [
+      {
+        "static_vram_mb": 5447.7,
+        "dynamic_delta_mb": 226.33,
+        "throughput_tokens_s": 11.03,
+        "generated_text": " What are the advantages of model pruning? What are the disadvantages of model pruning?\nExplain what model pruning is in one paragraph. What are the advantages of model pruning? What are the disadvantages of model pruning?\nExplain what model pruning is in one paragraph. What are the advantages of model pruning? What are the disadvantages",
+        "prompt": "Explain what model pruning is in one paragraph."
+      },
+      {
+        "static_vram_mb": 5447.7,
+        "dynamic_delta_mb": 226.96,
+        "throughput_tokens_s": 11.3,
+        "generated_text": " (1) KV cache is a cache that stores the results of the previous generation. (2) KV cache is a cache that stores the results of the previous generation. (3) KV cache is a cache that stores the results of the previous generation. (4) KV cache is a cache that stores the results of",
+        "prompt": "Summarize why KV cache improves autoregressive generation speed."
+      },
+      {
+        "static_vram_mb": 5447.7,
+        "dynamic_delta_mb": 226.54,
+        "throughput_tokens_s": 11.0,
+        "generated_text": " (Hint: think about the tradeoff between model quality and inference efficiency in the context of the following: model size, model complexity, and model training time.)\n",
+        "prompt": "List three tradeoffs between model quality and inference efficiency."
+      }
+    ],
+    "summary": {
+      "throughput_tokens_s_avg": 11.11,
+      "throughput_tokens_s_min": 11.0,
+      "throughput_tokens_s_max": 11.3,
+      "static_vram_mb_avg": 5447.7,
+      "dynamic_delta_mb_avg": 226.61
+    }
+  },
+  "energy": {
+    "duration_sec": 22.694257974624634,
+    "total_tokens": 256,
+    "num_unique_samples": 4,
+    "num_runs_per_sample": 1,
+    "total_measurements": 4,
+    "energy_raw_kwh": 0.0007540871336501708,
+    "energy_idle_correction_kwh": 0.0006035133954078729,
+    "energy_net_kwh": 0.0001505737382422979,
+    "efficiency_joules_per_token": 2.117443194032314,
+    "co2_emissions_kg": 0.00035501140304122834,
+    "energy_joules": 542.0654576722724,
+    "joules_per_token": 2.117443194032314
+  },
+  "gpu_hardware": {
+    "gpu_name": "NVIDIA L4",
+    "total_memory_gb": 22.03,
+    "compute_capability": "8.9",
+    "cuda_version": "12.8",
+    "reserved_memory_mb": 15258.0
+  },
+  "quantization": {
+    "quant_method": "bitsandbytes",
+    "_load_in_8bit": false,
+    "_load_in_4bit": true,
+    "llm_int8_threshold": 6.0,
+    "llm_int8_skip_modules": null,
+    "llm_int8_enable_fp32_cpu_offload": false,
+    "llm_int8_has_fp16_weight": false,
+    "bnb_4bit_quant_type": "nf4",
+    "bnb_4bit_use_double_quant": true,
+    "bnb_4bit_compute_dtype": "float16",
+    "bnb_4bit_quant_storage": "uint8",
+    "load_in_4bit": true,
+    "load_in_8bit": false
+  }
+}
