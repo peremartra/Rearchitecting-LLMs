@@ -53,3 +53,15 @@ Sreenivas, S. T., Muralidharan, S., Joshi, R., Chochowski, M., Mahabaleshwarkar,
 
 Liu, A. H., Khandelwal, K., Subramanian, S., Jouault, V., Rastogi, A., Sadé, A., Jeffares, A., Jiang, A., Cahill, A., Gavaudan, A., Sablayrolles, A., Héliou, A., You, A., Ehrenberg, A., Lo, A., Eliseev, A., Calvi, A., Sooriyarachchi, A., Bout, B., . . .  Ramzi, Z. (2026). Ministral 3. ArXiv. [https://arxiv.org/abs/2601.08584](https://arxiv.org/abs/2601.08584)
 
+## Chapter 7: **Specialization with QLoRA / QDoRA**
+Hu, E. J., Shen, Y., Wallis, P., Allen-Zhu, Z., Li, Y., Wang, S., Wang, L., & Chen, W. (2021). LoRA: Low-Rank Adaptation of Large Language Models. ArXiv. https://arxiv.org/abs/2106.09685
+
+Dettmers, T., Pagnoni, A., Holtzman, A., & Zettlemoyer, L. (2023). QLoRA: Efficient Finetuning of Quantized LLMs. ArXiv. https://arxiv.org/abs/2305.14314
+
+Liu, S. Y., Wang, C. Y., Yin, H., Molchanov, P., Wang, Y. C. F., Cheng, K. T., & Chen, M. H. (2024). DoRA: Weight-Decomposed Low-Rank Adaptation. ArXiv. https://arxiv.org/abs/2402.09353
+
+Losch, N., Plagwitz, L., Büscher, A., & Varghese, J. (2025). Fine-Tuning LLMs on Small Medical Datasets: Text Classification and Normalization Effectiveness on Cardiology reports and Discharge records. ArXiv. https://arxiv.org/abs/2503.21349
+
+## Chapter 8: **Attention optimization**
+He, S., Sun, G., Shen, Z., & Li, A. (2024). What Matters in Transformers? Not All Attention is Needed. ArXiv. https://arxiv.org/abs/2406.15786
+
