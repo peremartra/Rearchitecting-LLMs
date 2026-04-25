@@ -7,14 +7,6 @@
 [![optiPfair Downloads](https://img.shields.io/pypi/dm/optipfair?label=optiPfair%20downloads)](https://pypi.org/project/optipfair/)
 ---
 
-> [!IMPORTANT]
-> **🐉 World Book Day Flash Sale (Apr 21 - Apr 24) 🌹**
-> To celebrate *Sant Jordi* (the traditional festival of books and roses), Manning is offering a **45% discount** on my upcoming book, [*Rearchitecting LLMs*](https://hubs.la/Q040tvsK0), in all formats. 
->
-> Learn how to tame large models using structural pruning, knowledge distillation, and LoRA. 
-> Use code **`SJORDI45`** at checkout!
-
-
 Rearchitecting LLMs addresses the growing need for AI professionals who understand how LLMs work at a fundamental level—professionals who can create hyper-efficient models tailored to specific data and tasks rather than relying on one-size-fits-all solutions.
 
 <a href="https://hubs.la/Q040tvsK0">
