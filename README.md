@@ -4,15 +4,6 @@
 [![GitHub stars](https://img.shields.io/github/stars/peremartra/Rearchitecting-LLMs?style=social)](https://github.com/peremartra/Rearchitecting-LLMs/stargazers)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![optiPfair Downloads](https://img.shields.io/pypi/dm/optipfair?label=optiPfair%20downloads)](https://pypi.org/project/optipfair/)
----
-> [!IMPORTANT]
-> ### ⚡ FLASH SALE: 45% OFF ONLY TODAY!
-> My book **"Rearchitecting LLMs"** is Manning's **Deal of the Day**. 
-> Learn to build hyper-efficient Small Language Models (SLMs) using Pruning, Distillation, and Quantization.
-> 
-> **[👉 Get the discount here](https://www.manning.com/dotd)**
----
 
 Rearchitecting LLMs addresses the growing need for AI professionals who understand how LLMs work at a fundamental level—professionals who can create hyper-efficient models tailored to specific data and tasks rather than relying on one-size-fits-all solutions.
 
