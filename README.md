@@ -55,6 +55,19 @@ Perfect for:
 
 Stop being a mere user. It's time to become an architect.
 
+## 🧪 Join the Hands-on Labs Discussions
+
+Every chapter in this book includes a specific Hands-on Lab designed to push your understanding of model architecture. We use GitHub Discussions as our active laboratory to share metrics, architectural insights, doubts, and even Out-of-Memory (OOM) errors.
+
+**[→ Explore all Hands-on Labs Discussions](https://github.com/peremartra/Rearchitecting-LLMs/discussions?discussions_q=is%3Aopen+label%3A%22hands-on+labs%22)**
+
+Jump into the current active challenges:
+* **[CH02] Depth Pruning:** How many layers can you remove before the model breaks? Share your accuracy recovery metrics.
+* **[CH03] Architectural Blueprints:** Compare GLU implementations and expansion ratios across modern models like Qwen and Gemma.
+* **[CH04] Data-Driven Selection:** Share your progressive degradation curves and memory optimization tricks using PyTorch hooks.
+
+Whether you achieved >90% recovery with fewer distillation samples, or you just want to discuss a specific engineering trade-off you observed, share your configuration and results with the community.
+
 ## 🌟 Support This Project
 
 If you find these techniques useful, consider:
