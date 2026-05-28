@@ -9,8 +9,6 @@ Rearchitecting LLMs addresses the growing need for AI professionals who understa
 
 ---
 
-⚠️ **45% off *Rearchitecting LLMs* + entire Manning catalog with code `martra26` — Valid until May 27, 2026** | [Shop](https://hubs.la/Q040tvsK0)
-
 <a href="https://hubs.la/Q040tvsK0">
   <img src="Images/linkedin-profile-banner-martra.jpg" alt="alt text" width="100%">
 </a>
