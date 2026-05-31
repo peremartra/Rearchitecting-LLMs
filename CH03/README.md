@@ -5,6 +5,7 @@ This directory contains the notebook for Chapter 3, where we lay the essential g
 ## Notebooks
 
 ### 1. [CH03_NB01_Model_structures.ipynb](https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH03/CH03_NB01_Model_structures.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/peremartra/Rearchitecting-LLMs/blob/main/CH03/CH03_NB01_Model_structures.ipynb) [![nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.org/github/peremartra/Rearchitecting-LLMs/blob/main/CH03/CH03_NB01_Model_structures.ipynb)
 - **LLM**: `distilbert/distilgpt2`, `meta-llama/Llama-3.2-1B`, `google/gemma-3-270m`, `microsoft/Phi-4-mini-instruct`
 - **Dataset**: N/A (Analytical notebook)
 - **Description**: In this notebook, we dissect a range of models to build a strong mental map of modern LLM anatomy, from the classic architecture of DistilGPT2 to modern evolutions like Llama-3.2 and Gemma-3, and alternative designs like Phi-4.

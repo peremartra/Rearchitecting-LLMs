@@ -5,6 +5,7 @@ This directory contains the notebooks for Chapter 4, where we dive deep into sys
 ## Notebooks
 
 ### 1. [CH04_NB01_Cosine_Similarity.ipynb](https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH04/CH04_NB01_Cosine_Similarity.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/peremartra/Rearchitecting-LLMs/blob/main/CH04/CH04_NB01_Cosine_Similarity.ipynb) [![nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.org/github/peremartra/Rearchitecting-LLMs/blob/main/CH04/CH04_NB01_Cosine_Similarity.ipynb)
 - **LLM**: `Qwen/Qwen3-0.6B`
 - **Dataset**: `wikitext` (`wikitext-2-raw-v1`) and `sms_spam`
 - **Description**: This notebook explores how to evaluate the contribution of different transformer blocks to the LLM's objective using cosine similarity to guide data-driven pruning. It compares results between Wikipedia texts and SMS spam to demonstrate how different datasets affect layer importance. Measure the impact of pruning on multiple dimensions: perplexity, accuracy benchmarks (arc_easy, winogrande, hellaswag, lambada_openai), inference time, TTFT (Time to First Token), and throughput.

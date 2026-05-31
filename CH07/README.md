@@ -7,6 +7,7 @@ This directory contains the notebooks for Chapter 7, where we complete the rearc
 ### Foundations & Theory
 
 ### 1. [CH07_NB01_From_Matrices_to_Quantization.ipynb](https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH07/CH07_NB01_From_Matrices_to_Quantization.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/peremartra/Rearchitecting-LLMs/blob/main/CH07/CH07_NB01_From_Matrices_to_Quantization.ipynb) [![nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.org/github/peremartra/Rearchitecting-LLMs/blob/main/CH07/CH07_NB01_From_Matrices_to_Quantization.ipynb)
 - **LLM**: `HuggingFaceTB/SmolLM2-1.7B-Instruct`
 - **Dataset**: N/A (conceptual and mathematical walkthrough)
 - **Description**: Introduces the intuition behind low-rank adaptation and quantization-aware fine-tuning. It builds the conceptual bridge from matrix decomposition to practical parameter-efficient adaptation before training.
@@ -16,11 +17,13 @@ This directory contains the notebooks for Chapter 7, where we complete the rearc
 ### LoRA & DoRA Techniques
 
 ### 2. [CH07_NB02_L4_QLoRA_QDoRA.ipynb](https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH07/CH07_NB02_L4_QLoRA_QDoRA.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/peremartra/Rearchitecting-LLMs/blob/main/CH07/CH07_NB02_L4_QLoRA_QDoRA.ipynb) [![nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.org/github/peremartra/Rearchitecting-LLMs/blob/main/CH07/CH07_NB02_L4_QLoRA_QDoRA.ipynb)
 - **LLM**: `HuggingFaceTB/SmolLM2-1.7B-Instruct`
 - **Dataset**: `oopere/clinical-ner-qdora`
 - **Description**: Runs QLoRA and QDoRA fine-tuning on an L4 profile to compare schema compliance and benchmark retention. The notebook evaluates how efficient adaptation changes instruction-following quality in a clinical information extraction task.
 
 ### 3. [CH07_NB02_T4_QLoRA_QDoRA.ipynb](https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH07/CH07_NB02_T4_QLoRA_QDoRA.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/peremartra/Rearchitecting-LLMs/blob/main/CH07/CH07_NB02_T4_QLoRA_QDoRA.ipynb) [![nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.org/github/peremartra/Rearchitecting-LLMs/blob/main/CH07/CH07_NB02_T4_QLoRA_QDoRA.ipynb)
 - **LLM**: `HuggingFaceTB/SmolLM2-1.7B-Instruct`
 - **Dataset**: `oopere/clinical-ner-qdora`
 - **Description**: Repeats the QLoRA/QDoRA workflow under T4 constraints with memory-aware settings. It provides a practical reference for reproducing the chapter experiments on more limited GPU environments.
@@ -30,6 +33,7 @@ This directory contains the notebooks for Chapter 7, where we complete the rearc
 ### Hands-On Implementation
 
 ### 4. [CH07_NB03_L4_Hands_On.ipynb](https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH07/CH07_NB03_L4_Hands_On.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/peremartra/Rearchitecting-LLMs/blob/main/CH07/CH07_NB03_L4_Hands_On.ipynb) [![nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.org/github/peremartra/Rearchitecting-LLMs/blob/main/CH07/CH07_NB03_L4_Hands_On.ipynb)
 - **LLM**: `HuggingFaceTB/SmolLM2-1.7B-Instruct`
 - **Dataset**: `oopere/clinical-ner-qdora`
 - **Description**: End-to-end practical notebook for Chapter 7. It consolidates dataset loading, baseline evaluation, QLoRA/QDoRA training, and final comparison in a single reproducible workflow.
@@ -39,6 +43,7 @@ This directory contains the notebooks for Chapter 7, where we complete the rearc
 ### Utilities & Data Generation
 
 ### 5. [CH07_NB_dataset_generator.ipynb](https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH07/CH07_NB_dataset_generator.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/peremartra/Rearchitecting-LLMs/blob/main/CH07/CH07_NB_dataset_generator.ipynb) [![nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.org/github/peremartra/Rearchitecting-LLMs/blob/main/CH07/CH07_NB_dataset_generator.ipynb)
 - **LLM**: Multiple providers via LiteLLM
 - **Dataset**: `oopere/clinical-ner-qdora` (generated and published)
 - **Description**: Generates the synthetic Clinical NER dataset used in Chapter 7 and prepares it for publication on Hugging Face. It includes category-balanced generation, schema validation, and documentation-ready metadata for reproducible fine-tuning.

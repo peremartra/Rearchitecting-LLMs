@@ -9,16 +9,19 @@ By the end of this chapter, you will understand that width pruning doesn't just 
 ## Notebooks
 
 ### 1. [CH05_NB01_width_pruning.ipynb](https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH05/CH05_NB01_width_pruning.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/peremartra/Rearchitecting-LLMs/blob/main/CH05/CH05_NB01_width_pruning.ipynb) [![nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.org/github/peremartra/Rearchitecting-LLMs/blob/main/CH05/CH05_NB01_width_pruning.ipynb)
 - **LLM**: `meta-llama/Llama-3.2-1B`
 - **Dataset**: N/A (Data-free static pruning, evaluated on `GSM8K`, `IFEval`, `TruthfulQA` benchmarks)
 - **Description**: This notebook implements static width pruning based on weight magnitude for GLU architecture. It surgically reduces the MLP expansion ratio and analyzes the trade-off in reasoning, instruction following, and truthfulness.
 
 ### 2. [CH05_NB02_data_sms_wiki.ipynb](https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH05/CH05_NB02_data_sms_wiki.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/peremartra/Rearchitecting-LLMs/blob/main/CH05/CH05_NB02_data_sms_wiki.ipynb) [![nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.org/github/peremartra/Rearchitecting-LLMs/blob/main/CH05/CH05_NB02_data_sms_wiki.ipynb)
 - **LLM**: `meta-llama/Llama-3.2-1B`
 - **Dataset**: `wikitext` (`wikitext-2-raw-v1`) and `sms_spam`
 - **Description**: This notebook demonstrates data-driven width pruning by capturing the activations of the `down_proj` layers using PyTorch hooks. It creates two specialized models calibrated on different datasets to evaluate domain-specific specialization.
 
 ### 3. [CH05_NB03_bonus.ipynb](https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH05/CH05_NB03_bonus.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/peremartra/Rearchitecting-LLMs/blob/main/CH05/CH05_NB03_bonus.ipynb) [![nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.org/github/peremartra/Rearchitecting-LLMs/blob/main/CH05/CH05_NB03_bonus.ipynb)
 - **LLM**: `meta-llama/Llama-3.2-1B`
 - **Dataset**: `wikitext` (`wikitext-2-raw-v1`) and `sms_spam`
 - **Description**: A bonus notebook testing a static pruned 20% model on Wiki2 and SMS Datasets for cross-evaluation insights.
