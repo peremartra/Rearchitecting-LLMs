@@ -350,7 +350,7 @@ def evaluate_metrics(model, dataloader, device='cuda'):
             )
 
             # Only real tokens (no padding)
-            num_real_tokens = attention_mask.sum().item()
+            num_real_tokens = attention_mask[..., 1:].sum().item()
 
             total_loss += outputs.loss.item() * num_real_tokens
             total_tokens += num_real_tokens
