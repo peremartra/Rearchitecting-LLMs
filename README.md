@@ -31,6 +31,26 @@ Beyond these foundational techniques, the book introduces **original methodologi
 
 *The Rearchitecting Pipeline. The domain-specific dataset guides the calibration of the base model, informs structural optimization decisions, and drives the final specialization through LoRA fine-tuning. A general dataset supports Knowledge Recovery, ensuring the pruned model retains broad capabilities before domain-specific specialization. This dual approach optimizes each phase for the project's specific objectives.*
 
+## 📚 Book Contents
+
+| | Chapter | What you'll learn |
+|---|---|---|
+| **PART 1: FOUNDATIONS** | | |
+| ✅ | 1 · Why rearchitecting LLMs matters | The case for specialized models over generic LLMs |
+| ✅ | [2 · An end-to-end rearchitecting project](CH02/) | Full pipeline: prune and recover |
+| ✅ | [3 · A blueprint to modern transformers](CH03/) | GLU architectures, attention, and model internals |
+| **PART 2: HANDS-ON OPTIMIZATION** | | |
+| ✅ | [4 · Building smaller and faster LLMs with depth pruning](CH04/) | Block removal, caputure block importance with python hooks, evaluate pruning |
+| ✅ | [5 · Shaping model architectures via width pruning](CH05/) | GLU neuron selection, data-driven pruning strategies |
+| ✅ | [6 · Knowledge recovery through distillation](CH06/) | Recovering capability after structural compression |
+| ✅ | [7 · Model specialization](CH07/) | LoRA / DoRA fine-tuning and quantization for domain tasks |
+| ✅ | [8 · Attention Optimization](CH08/) | KV cache, attention bypass, inference acceleration |
+| 🔜 | 9 · Dynamic Pruning for Adaptive Inference | Early exit mechanisms that stop inference before the final layer |
+| **PART 3: BEYOND THE BLACK BOX** | | |
+| 🔜 | 10 · Exploring the Black Box | Activation analysis and behavioral interpretability |
+| 🔜 | 11 · Optimizing While Eliminating Biases | Fair pruning: removing demographic bias at neuron level |
+| 🔜 | 12 · Capstone Project | End-to-end: replacing API calls with a specialized SLM |
+
 ## 🧠 Your Interactive Technical Companion: NotebookLM Space
 
 [![Interact with NotebookLM](https://img.shields.io/badge/🤖_NotebookLM-Ask_Anything-FF6B35?style=for-the-badge&logo=google&logoColor=white)](https://notebooklm.google.com/notebook/a059766a-14bf-4d75-8840-b05a79be680e)
@@ -63,13 +83,6 @@ Every chapter in this book includes a specific Hands-on Lab designed to push you
 
 **[→ Explore all Hands-on Labs Discussions](https://github.com/peremartra/Rearchitecting-LLMs/discussions?discussions_q=is%3Aopen+label%3A%22hands-on+labs%22)**
 
-Jump into the current active challenges:
-* **[CH02] Depth Pruning:** How many layers can you remove before the model breaks? Share your accuracy recovery metrics.
-* **[CH03] Architectural Blueprints:** Compare GLU implementations and expansion ratios across modern models like Qwen and Gemma.
-* **[CH04] Data-Driven Selection:** Share your progressive degradation curves and memory optimization tricks using PyTorch hooks.
-
-Whether you achieved >90% recovery with fewer distillation samples, or you just want to discuss a specific engineering trade-off you observed, share your configuration and results with the community.
-
 ## 🌟 Support This Project
 
 If you find these techniques useful, consider:
@@ -77,7 +90,6 @@ If you find these techniques useful, consider:
 - 🔄 Sharing it with your team
 - 💬 Opening Discussions with your questions
 
-Every star helps us reach more LLM engineers who can benefit from this work.
 
 ## Citation
 
