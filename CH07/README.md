@@ -42,6 +42,16 @@ This directory contains the notebooks for Chapter 7, where we complete the rearc
 
 ### Utilities & Data Generation
 
+### 4. [CH07_NB04_uploadHF.ipynb](https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH07/CH07_NB04_uploadHF.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/peremartra/Rearchitecting-LLMs/blob/main/CH07/CH07_NB04_uploadHF.ipynb) [![nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.org/github/peremartra/Rearchitecting-LLMs/blob/main/CH07/CH07_NB04_uploadHF.ipynb)
+- **LLM**: `HuggingFaceTB/SmolLM2-1.7B-Instruct`
+- **Dataset**: `oopere/clinical-ner-qdora`
+- **Description**: Trains a QLoRA adapter on the clinical NER dataset, merges the adapter weights into the base model, generates a model card with results from NB02, and publishes the merged model to Hugging Face Hub under the authenticated user's profile. Finishes with a reload-from-Hub inference smoke-test.
+
+---
+
+### Utilities & Data Generation
+
 ### 5. [CH07_NB_dataset_generator.ipynb](https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH07/CH07_NB_dataset_generator.ipynb)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/peremartra/Rearchitecting-LLMs/blob/main/CH07/CH07_NB_dataset_generator.ipynb) [![nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.org/github/peremartra/Rearchitecting-LLMs/blob/main/CH07/CH07_NB_dataset_generator.ipynb)
 - **LLM**: Multiple providers via LiteLLM
