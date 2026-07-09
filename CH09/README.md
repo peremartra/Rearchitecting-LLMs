@@ -16,8 +16,21 @@ This directory contains the notebooks for Chapter 9, we move from the core mixtu
 
 ### Upcycling a Pre-trained Expert
 
-### 2. [CH09_NB02_MOE_Upcycling.ipynb](https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH09/CH09_NB02_MOE_Upcycling.ipynb)
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/peremartra/Rearchitecting-LLMs/blob/main/CH09/CH09_NB02_MOE_Upcycling.ipynb) [![nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.org/github/peremartra/Rearchitecting-LLMs/blob/main/CH09/CH09_NB02_MOE_Upcycling.ipynb)
+### 2. [CH09_NB02_MOE_Upcycling_TopK.ipynb](https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH09/CH09_NB02_MOE_Upcycling_TopK.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/peremartra/Rearchitecting-LLMs/blob/main/CH09/CH09_NB02_MOE_Upcycling_TopK.ipynb) [![nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.org/github/peremartra/Rearchitecting-LLMs/blob/main/CH09/CH09_NB02_MOE_Upcycling_TopK.ipynb)
 - **LLM**: `HuggingFaceTB/SmolLM2-1.7B-Instruct` and `oopere/SmolLM2-1.7B-ClinicalNER`
 - **Dataset**: `oopere/clinical-ner-qdora`
 - **Description**: This notebook reuses the clinical MLP learned in Chapter 7 and transplants it directly as Expert 1. The workflow skips full expert training, focuses on router adaptation, and evaluates general behavior, clinical extraction quality, and routing decisions.
+
+---
+
+### Three-Expert Upcycling Hands-On
+
+### 3. [CH09_NB03_HandsOn_3Expert_MoE.ipynb](https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH09/CH09_NB03_HandsOn_3Expert_MoE.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/peremartra/Rearchitecting-LLMs/blob/main/CH09/CH09_NB03_HandsOn_3Expert_MoE.ipynb) [![nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.org/github/peremartra/Rearchitecting-LLMs/blob/main/CH09/CH09_NB03_HandsOn_3Expert_MoE.ipynb)
+- **LLM**: `HuggingFaceTB/SmolLM2-1.7B-Instruct` and `oopere/SmolLM2-1.7B-ClinicalNER`
+- **Dataset**: `oopere/clinical-ner-qdora` and `flytech/python-codes-25k`
+- **Description**: This notebook extends the upcycling design from section 9.3 to three experts: Expert 0 keeps the original base weights, Expert 1 carries the clinical specialization from Chapter 7, and Expert 2 is initialized from a copy of the base MLP and trained on Python code from `flytech/python-codes-25k`. Router and Expert 2 tail layers are trained jointly on a mixture of all three domains. The primary tool for evaluating the result is `analyze_routing`, already introduced in sections 9.2.2. The exercises that follow explore the main variables you can adjust once the baseline notebook is running:
+	- Training depth and routing stability
+	- Expert isolation through selective freezing
+	- Two-phase training for cleaner routing
