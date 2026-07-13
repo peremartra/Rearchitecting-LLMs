@@ -45,7 +45,7 @@ Beyond these foundational techniques, the book introduces **original methodologi
 | ✅ | [6 · Knowledge recovery through distillation](CH06/) | Recovering capability after structural compression |
 | ✅ | [7 · Model specialization](CH07/) | LoRA / DoRA fine-tuning and quantization for domain tasks |
 | ✅ | [8 · Attention Optimization](CH08/) | KV cache, attention bypass, inference acceleration |
-| ✅ | [9 · Dynamic Pruning for Adaptive Inference](CH09) | Early exit mechanisms that stop inference before the final layer |
+| ✅ | [9 · Dynamic Pruning for Adaptive Inference](CH09) | Mixture of Experts (MoE) adapted to SLMs.  |
 | **PART 3: BEYOND THE BLACK BOX** | | |
 | 🔜 | 10 · Exploring the Black Box | Activation analysis and behavioral interpretability |
 | 🔜 | 11 · Optimizing While Eliminating Biases | Fair pruning: removing demographic bias at neuron level |
