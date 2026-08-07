@@ -49,7 +49,7 @@ Beyond these foundational techniques, the book introduces **original methodologi
 | ✅ | [8 · Attention Optimization](CH08/) | KV cache, attention bypass, inference acceleration |
 | ✅ | [9 · Dynamic Pruning for Adaptive Inference](CH09) | Mixture of Experts (MoE) adapted to SLMs.  |
 | **PART 3: BEYOND THE BLACK BOX** | | |
-| 🔜 | 10 · Exploring the Black Box | Activation analysis and behavioral interpretability |
+| ✅ | [10 · Exploring the Trasformer Black Box](CH10) | Activation analysis and behavioral interpretability |
 | 🔜 | 11 · Optimizing While Eliminating Biases | Fair pruning: removing demographic bias at neuron level |
 | 🔜 | 12 · Capstone Project | End-to-end: replacing API calls with a specialized SLM |
 
