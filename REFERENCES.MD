@@ -65,10 +65,14 @@ Losch, N., Plagwitz, L., Büscher, A., & Varghese, J. (2025). Fine-Tuning LLMs o
 ## Chapter 8: **Attention optimization**
 He, S., Sun, G., Shen, Z., & Li, A. (2024). What Matters in Transformers? Not All Attention is Needed. ArXiv. https://arxiv.org/abs/2406.15786
 
-## Chapter 9: 
+## Chapter 9: **Dynamic routing with Mixture of Experts**
 Shazeer, N., Mirhoseini, A., Maziarz, K., Davis, A., Le, Q., Hinton, G., & Dean, J. (2017). Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer. ArXiv. https://arxiv.org/abs/1701.06538
 
 Jiang, A. Q., Sablayrolles, A., Roux, A., Mensch, A., Savary, B., Bamford, C., Chaplot, D. S., Casas, D. D., Hanna, E. B., Bressand, F., Lengyel, G., Bour, G., Lample, G., Lavaud, L. R., Saulnier, L., Lachaux, M. A., Stock, P., Subramanian, S., Yang, S., . . .  Sayed, W. E. (2024). Mixtral of Experts. ArXiv. https://arxiv.org/abs/2401.04088
 
 Komatsuzaki, A., Puigcerver, J., Lee-Thorp, J., Ruiz, C. R., Mustafa, B., Ainslie, J., Tay, Y., Dehghani, M., & Houlsby, N. (2022). Sparse Upcycling: Training Mixture-of-Experts from Dense Checkpoints. ArXiv. https://arxiv.org/abs/2212.05055
+
+## Chapter 10: **Exploring the transformer black box**
+Belrose, N., Ostrovsky, I., McKinney, L., Furman, Z., Smith, L., Halawi, D., Biderman, S., & Steinhardt, J. (2023). Eliciting Latent Predictions from Transformers with the Tuned Lens. ArXiv. https://arxiv.org/abs/2303.08112
+
 
