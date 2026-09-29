@@ -49,7 +49,7 @@ Beyond these foundational techniques, the book introduces **original methodologi
 | ✅ | [9 · Dynamic Pruning for Adaptive Inference](CH09) | Mixture of Experts (MoE) adapted to SLMs.  |
 | **PART 3: BEYOND THE BLACK BOX** | | |
 | ✅ | [10 · Exploring the Trasformer Black Box](CH10) | Activation analysis and behavioral interpretability |
-| 🔜 | 11 · Optimizing While Eliminating Biases | Fair pruning: removing demographic bias at neuron level |
+| 🔜 | [11 · Precision pruning for bias](CH11) | Fair pruning: removing demographic bias at neuron level |
 | 🔜 | 12 · Capstone Project | End-to-end: replacing API calls with a specialized SLM |
 
 ## 🧠 Your Interactive Technical Companion: NotebookLM Space
