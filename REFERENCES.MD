@@ -25,14 +25,14 @@ Men, X., Xu, M., Zhang, Q., Wang, B., Lin, H., Lu, Y., Han, X., & Chen, W. (2024
 
 Kim, B.-K., Kim, G., Kim, T.-H., Castells, T., Choi, S., Shin, J., & Song, H.-K. (2024). **Shortened LLaMA: Depth Pruning for Large Language Models with Comparison of Retraining Methods.** http://arxiv.org/abs/2402.02834
 
-## Chapter 5: **Width Pruning in Modern Architectures**
+## Chapter 5: **Shaping model architectures via width pruning**
 Guo, Z., Kamigaito, H., & Wanatnabe, T. (2024). **Dependency-Aware Semi-Structured Sparsity of GLU Variants in Large Language Models.** http://arxiv.org/abs/2405.01943
 
 Wang, Y., Ma, M., Wang, Z., Chen, J., Fan, H., Shan, L., Yang, Q., Xu, D., Liu, M., & Qin, B. (2024). **CFSP: An Efficient Structured Pruning Framework for LLMs with Coarse-to-Fine Activation Information.** http://arxiv.org/abs/2409.13199
 
 Martra, P. (2025). Fragile Knowledge, Robust Instruction-Following: The Width Pruning Dichotomy in Llama-3.2. ArXiv. https://arxiv.org/abs/2512.22671
 
-## Chapter 6: **Knowledge recovery**
+## Chapter 6: **Knowledge recovery through distillation**
 Tian, H., Xu, B., & Li, S. (2025). Distillation Dynamics: Towards Understanding Feature-Based Distillation in Vision Transformers. ArXiv. https://arxiv.org/abs/2511.06848
 
 Ko, J., Chen, T., Kim, S., Ding, T., Liang, L., Zharkov, I., & Yun, S. Y. (2025). DistiLLM-2: A Contrastive Approach Boosts the Distillation of LLMs. ArXiv. https://arxiv.org/abs/2503.07067
@@ -41,7 +41,7 @@ Sreenivas, S. T., Muralidharan, S., Joshi, R., Chochowski, M., Mahabaleshwarkar,
 
 Liu, A. H., Khandelwal, K., Subramanian, S., Jouault, V., Rastogi, A., Sadé, A., Jeffares, A., Jiang, A., Cahill, A., Gavaudan, A., Sablayrolles, A., Héliou, A., You, A., Ehrenberg, A., Lo, A., Eliseev, A., Calvi, A., Sooriyarachchi, A., Bout, B., . . .  Ramzi, Z. (2026). Ministral 3. ArXiv. [https://arxiv.org/abs/2601.08584](https://arxiv.org/abs/2601.08584)
 
-## Chapter 7: **Specialization with QLoRA / QDoRA**
+## Chapter 7: **Model specialization**
 Hu, E. J., Shen, Y., Wallis, P., Allen-Zhu, Z., Li, Y., Wang, S., Wang, L., & Chen, W. (2021). LoRA: Low-Rank Adaptation of Large Language Models. ArXiv. https://arxiv.org/abs/2106.09685
 
 Dettmers, T., Pagnoni, A., Holtzman, A., & Zettlemoyer, L. (2023). QLoRA: Efficient Finetuning of Quantized LLMs. ArXiv. https://arxiv.org/abs/2305.14314
