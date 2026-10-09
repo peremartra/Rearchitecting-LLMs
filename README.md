@@ -50,8 +50,8 @@ Beyond these foundational techniques, the book introduces **original methodologi
 | **PART 3: BEYOND THE BLACK BOX** | | |
 | ✅ | [10 · Exploring the Trasformer Black Box](CH10) | Activation analysis and behavioral interpretability |
 | 🔜 | [11 · Precision pruning for bias](CH11) | Fair pruning: removing demographic bias at neuron level |
-| 🔜 | 12 · Capstone I — Replacing one agent call with a specialized SLM in production | Replacing API calls with a specialized SLM |
-| 🔜 | 13 · Capstone II — Creating a model family for agents  | Create 3 different models from a base one |
+| 🔜 | [12 · Case study — Replacing one agent call with a specialized SLM in production](CH12) | Replacing API calls with a specialized SLM |
+| 🔜 | [13 · Capstone II — Creating a model family for agents](CH13)  | Create 3 different models from a base one |
 
 ## 🧠 Your Interactive Technical Companion: NotebookLM Space
 
