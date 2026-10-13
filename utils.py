@@ -59,12 +59,14 @@ def measure_detailed_performance(model, tokenizer, data_source, num_runs=3, max_
     device = model.device
     model.eval()
 
-    # --- OPTIMIZATION SETUP ---
-    # Auto-detect best available precision (BF16 for Ampere+, FP16 otherwise)
-    use_amp = torch.cuda.is_available()
-    dtype = torch.bfloat16 if (use_amp and torch.cuda.is_bf16_supported()) else torch.float16
-    print(f"🚀 Optimization active: Using Mixed Precision ({dtype}) if available.")
-    
+    # --- PRECISION ---
+    # Measure in the model's own dtype. No torch.autocast: autocast would run the
+    # model in a different precision than the one that was loaded (e.g. bf16
+    # emulated on a T4 for an fp16 model) and the numbers would not describe the
+    # model you pass in.
+    dtype = next(model.parameters()).dtype
+    print(f"Measuring in the model's native dtype: {dtype}")
+
     # --- 1. DATA PREPARATION (Optimized) ---
     # We store BATCHES now, not flattened samples, to allow parallel GPU usage.
     batches = []
@@ -106,16 +108,14 @@ def measure_detailed_performance(model, tokenizer, data_source, num_runs=3, max_
     warmup_attn = warmup_batch['attention_mask'].to(device) if 'attention_mask' in warmup_batch else None
 
     with torch.no_grad():
-        # Use Autocast for warmup too
-        with torch.autocast(device_type='cuda', dtype=dtype, enabled=use_amp):
-            for _ in range(2):
-                model.generate(
-                    warmup_input,
-                    attention_mask=warmup_attn,
-                    max_new_tokens=max_new_tokens,
-                    do_sample=False,
-                    pad_token_id=tokenizer.pad_token_id
-                )
+        for _ in range(2):
+            model.generate(
+                warmup_input,
+                attention_mask=warmup_attn,
+                max_new_tokens=max_new_tokens,
+                do_sample=False,
+                pad_token_id=tokenizer.pad_token_id
+            )
     if torch.cuda.is_available():
         torch.cuda.synchronize()  # Ensure warmup completed
 
@@ -140,15 +140,13 @@ def measure_detailed_performance(model, tokenizer, data_source, num_runs=3, max_
                 
                 start_time = time.time()
                 
-                # OPTIMIZATION: Mixed Precision Context
-                with torch.autocast(device_type='cuda', dtype=dtype, enabled=use_amp):
-                    outputs = model.generate(
-                        input_ids,
-                        attention_mask=attention_mask,
-                        max_new_tokens=max_new_tokens,
-                        do_sample=False,
-                        pad_token_id=tokenizer.pad_token_id
-                    )
+                outputs = model.generate(
+                    input_ids,
+                    attention_mask=attention_mask,
+                    max_new_tokens=max_new_tokens,
+                    do_sample=False,
+                    pad_token_id=tokenizer.pad_token_id
+                )
                 
                 # Synchronize before stopping the clock
                 if torch.cuda.is_available():
@@ -469,7 +467,7 @@ def calibrate_idle_power(device="cuda", duration_seconds=30, verbose=True):
     
     return calibration_result
 
-def measure_energy_consumption(model, tokenizer, data_source, idle_power_watts=None, num_runs=1, max_new_tokens=50, max_samples=None):
+def measure_energy_consumption(model, tokenizer, data_source, idle_power_watts=None, num_runs=1, max_new_tokens=50, max_samples=None, fixed_length=True):
     """
     Measures the net energy consumption of a model removing idle power.
     
@@ -487,6 +485,10 @@ def measure_energy_consumption(model, tokenizer, data_source, idle_power_watts=N
         num_runs: Number of runs per sample (typically 1 for energy measurement).
         max_new_tokens: Tokens to generate per sample.
         max_samples: Limit number of samples (None = all available).
+        fixed_length: If True (default), every generation produces exactly
+            max_new_tokens tokens (min_new_tokens=max_new_tokens). This makes
+            Joules/token comparable across models: otherwise a model that stops
+            earlier (EOS) is measured on different work than one that does not.
 
     Returns:
         dict: Energy metrics (kWh, Joules, Joules/Token, CO2).
@@ -555,6 +557,7 @@ def measure_energy_consumption(model, tokenizer, data_source, idle_power_watts=N
             model.generate(
                 warmup_input,
                 max_new_tokens=max_new_tokens,  # Use same length as test
+                min_new_tokens=max_new_tokens if fixed_length else None,
                 do_sample=False,
                 pad_token_id=tokenizer.pad_token_id
             )
@@ -590,6 +593,7 @@ def measure_energy_consumption(model, tokenizer, data_source, idle_power_watts=N
                     outputs = model.generate(
                         input_ids,
                         max_new_tokens=max_new_tokens,
+                        min_new_tokens=max_new_tokens if fixed_length else None,
                         do_sample=False,
                         pad_token_id=tokenizer.pad_token_id
                     )
