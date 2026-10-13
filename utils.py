@@ -99,7 +99,8 @@ def measure_detailed_performance(model, tokenizer, data_source, num_runs=3, max_
         if max_samples and total_samples_count >= max_samples:
             break
             
-        batches.append(_left_trim_batch(batch, tokenizer.pad_token_id))
+        pad_id = tokenizer.pad_token_id if tokenizer.pad_token_id is not None else tokenizer.eos_token_id
+        batches.append(_left_trim_batch(batch, pad_id))
         total_samples_count += current_bs
 
     # Edge case: No samples available
