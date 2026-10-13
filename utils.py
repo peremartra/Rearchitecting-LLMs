@@ -28,12 +28,31 @@ def clear_gpu_cache():
         torch.cuda.synchronize()
     gc.collect()
 
-def measure_detailed_performance(model, tokenizer, data_source, num_runs=3, max_new_tokens=50, max_samples=None):
+def _left_trim_batch(batch, pad_token_id):
+    """
+    Rebuilds a right-padded batch as a left-padded batch trimmed to the longest
+    real sequence. Decoder-only models must be padded on the left for generation,
+    and processing hundreds of padding tokens per prompt measures padding, not the model.
+    """
+    if 'attention_mask' not in batch:
+        return batch
+    ids, mask = batch['input_ids'], batch['attention_mask']
+    real = [row[m.bool()] for row, m in zip(ids, mask)]
+    max_len = max(len(r) for r in real)
+    new_ids = torch.full((len(real), max_len), pad_token_id, dtype=ids.dtype)
+    new_mask = torch.zeros((len(real), max_len), dtype=mask.dtype)
+    for i, r in enumerate(real):
+        new_ids[i, max_len - len(r):] = r
+        new_mask[i, max_len - len(r):] = 1
+    return {'input_ids': new_ids, 'attention_mask': new_mask}
+
+def measure_detailed_performance(model, tokenizer, data_source, num_runs=3, max_new_tokens=50, max_samples=None, fixed_length=True):
     """
     Measures inference performance.
     
-    OPTIMIZED VERSION: Supports Batching and Mixed Precision (AMP) internally 
-    while maintaining the exact same interface and return format.
+    Supports batching. Runs in the model's own dtype (no autocast). Each batch is
+    left-padded and trimmed to its real length, and, if fixed_length=True (default),
+    every generation produces exactly max_new_tokens new tokens.
 
     Args:
         model: Model to evaluate
@@ -80,7 +99,7 @@ def measure_detailed_performance(model, tokenizer, data_source, num_runs=3, max_
         if max_samples and total_samples_count >= max_samples:
             break
             
-        batches.append(batch)
+        batches.append(_left_trim_batch(batch, tokenizer.pad_token_id))
         total_samples_count += current_bs
 
     # Edge case: No samples available
@@ -113,6 +132,7 @@ def measure_detailed_performance(model, tokenizer, data_source, num_runs=3, max_
                 warmup_input,
                 attention_mask=warmup_attn,
                 max_new_tokens=max_new_tokens,
+                min_new_tokens=max_new_tokens if fixed_length else None,
                 do_sample=False,
                 pad_token_id=tokenizer.pad_token_id
             )
@@ -138,12 +158,13 @@ def measure_detailed_performance(model, tokenizer, data_source, num_runs=3, max_
                 if torch.cuda.is_available():
                     torch.cuda.synchronize()
                 
-                start_time = time.time()
+                start_time = time.perf_counter()
                 
                 outputs = model.generate(
                     input_ids,
                     attention_mask=attention_mask,
                     max_new_tokens=max_new_tokens,
+                    min_new_tokens=max_new_tokens if fixed_length else None,
                     do_sample=False,
                     pad_token_id=tokenizer.pad_token_id
                 )
@@ -151,7 +172,7 @@ def measure_detailed_performance(model, tokenizer, data_source, num_runs=3, max_
                 # Synchronize before stopping the clock
                 if torch.cuda.is_available():
                     torch.cuda.synchronize()
-                end_time = time.time()
+                end_time = time.perf_counter()
 
                 # Calculations
                 elapsed = end_time - start_time
@@ -508,8 +529,12 @@ def measure_energy_consumption(model, tokenizer, data_source, idle_power_watts=N
     # Flatten the data_source to get the list of input tensors
     for batch in data_source:
         current_batch_input_ids = batch['input_ids']
+        current_mask = batch['attention_mask'] if 'attention_mask' in batch else None
         for i in range(len(current_batch_input_ids)):
-            samples.append(current_batch_input_ids[i])
+            ids = current_batch_input_ids[i]
+            if current_mask is not None:
+                ids = ids[current_mask[i].bool()]   # real tokens only (no padding)
+            samples.append(ids)
             if max_samples and len(samples) >= max_samples:
                 break
         if max_samples and len(samples) >= max_samples:
