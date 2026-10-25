@@ -63,4 +63,14 @@ Komatsuzaki, A., Puigcerver, J., Lee-Thorp, J., Ruiz, C. R., Mustafa, B., Ainsli
 ## Chapter 10: **Exploring the transformer black box**
 Belrose, N., Ostrovsky, I., McKinney, L., Furman, Z., Smith, L., Halawi, D., Biderman, S., & Steinhardt, J. (2023). Eliciting Latent Predictions from Transformers with the Tuned Lens. ArXiv. https://arxiv.org/abs/2303.08112
 
+## Chapter 11: **Precision pruning for bias**
+Decomposing Language Models With Dictionary Learning (Bricken et al., 2023, https://transformer-circuits.pub/2023/monosemantic-features)
+
+Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet (Templeton et al., 2024, https://transformer-circuits.pub/2024/scaling-monosemanticity/)
+
+Martra, P., Cámara, E. M., & López, A. U. (2026). Fairness Pruning: Locating Demographic Bias in GLU-MLP Layers via Differential Activations. ArXiv. https://arxiv.org/abs/2607.28319
+
+
+
+
 
