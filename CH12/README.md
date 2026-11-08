@@ -2,6 +2,8 @@
 
 This directory contains the notebooks for Chapter 12. They explore two practical parts of replacing an agent's API call with a specialized small language model: serving a structurally pruned model with vLLM, and estimating the effects of width alignment, attention-layer count, and serving costs.
 
+**Guest Chapter by [Ishita Verma](https://www.linkedin.com/in/ishitaverma17)**
+
 ## Notebooks
 
 ### Serving an Attention-Free Model with vLLM
