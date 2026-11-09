@@ -21,7 +21,7 @@ The industry is shifting away from generic, closed-source models toward open-sou
 
 The book teaches **optimization techniques** for transforming large pre-trained models into efficient Small Language Models (SLMs). These methodologies—including depth pruning, width pruning in GLU architectures, and knowledge distillation—are similar to approaches used by companies like [**Nvidia**](https://arxiv.org/abs/2407.14679) (Minitron family) and [**Mistral**](https://arxiv.org/abs/2601.08584) (Ministral family) to create production-ready model families.
 
-Beyond these foundational techniques, the book introduces **original methodologies** like Fair Pruning (bias-aware optimization) and Adaptive Attention Bypass (dynamic inference), combining industry best practices with cutting-edge research. You'll learn to apply all these techniques to open-source models like Llama, Gemma, and Qwen, with hands-on notebooks that run on Google Colab's free tier.
+Beyond these foundational techniques, the book introduces **original methodologies** like Fair Pruning (bias-aware optimization), combining industry best practices with cutting-edge research. You'll learn to apply all these techniques to open-source models like Llama, Gemma, and Qwen, with hands-on notebooks that run on Google Colab's free tier.
 
 * Surgically optimize model architectures through depth and width pruning
 * Recover lost knowledge using targeted distillation techniques
