@@ -1,0 +1,39 @@
+name: Seed cohort discussions
+
+# Manual workflow for course cohorts. Copies the "Hands-on" discussions of the
+# book repository into this fork, with their labels. Safe to run more than once.
+# Before running it: enable Discussions in Settings > General > Features.
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_repo:
+        description: Repository to copy the discussions from
+        required: false
+        default: peremartra/Rearchitecting-LLMs
+      dry_run:
+        description: Only list what would be created
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  issues: write        # create labels
+  discussions: write   # create discussions
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Copy discussions
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_REPO: ${{ inputs.source_repo }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          ARGS=""
+          if [ "$DRY_RUN" = "true" ]; then ARGS="--dry-run"; fi
+          python3 .github/scripts/seed_discussions.py --source "$SOURCE_REPO" $ARGS
