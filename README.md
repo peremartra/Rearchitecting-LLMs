@@ -83,6 +83,23 @@ Stop being a mere user. It's time to become an architect.
 
 Every chapter in this book includes a specific Hands-on Lab designed to push your understanding of model architecture. We use GitHub Discussions as our active laboratory to share metrics, architectural insights, doubts, and even Out-of-Memory (OOM) errors.
 
+## 🎓 Using this book in a course
+
+Teaching with *Rearchitecting LLMs*? A class, a study group or a company reading group can run the hands-on labs together using a fork of this repository.
+
+1. **Fork once per cohort.** The instructor forks this repo and enables *Settings → General → Features → Discussions* in the fork. Notebooks keep opening from this repository through the Colab badges, so students always run the latest version.
+2. **Seed the discussions.** In the fork's *Actions* tab, enable workflows and run **Seed cohort discussions** ([direct link](../../actions/workflows/seed_discussions.yml)). It copies the *Hands-on Discussion* of every chapter from CH02 to CH13 (Chapter 1 has none), with the same labels (`CH06`, `hands-on labs`), so you can filter the fork's discussions exactly as in the link above. It is safe to run more than once.
+3. **Students answer inside the thread.** Each student posts one comment following the results template at the end of the discussion (exercise attempted, model, hardware and versions, configurations tried, results, match with the chapter, key insight, link). Numbers that don't match the chapter are as useful as those that do, and failed runs and OOM errors count. Replies are for peer review.
+4. **Hardware.** Most labs run on a free Colab T4. Those needing an L4 or A100 say so in the chapter README, and the Chapter 6 challenge can be explored by changing configuration even without an A100.
+
+**Good to know**
+- Enabling Actions in the fork also enables this repository's notebook-cleanup workflow, which amends and force-pushes any push that touches `.ipynb` files. Don't push notebooks to `main`; share them as Colab links or Gists. Once the discussions are seeded, you can disable Actions again in the fork's settings.
+- A fork of a public repo is public, so submissions are visible to everyone. Tell students before they post.
+- Use *Sync fork* to pick up new notebooks and fixes.
+- The repo is Apache-2.0: keep the LICENSE and cite the book (see below).
+
+**Running a course with this book?** I'd like to hear about it: open a Discussion in the *Courses* category.
+
 **[→ Explore all Hands-on Labs Discussions](https://github.com/peremartra/Rearchitecting-LLMs/discussions?discussions_q=is%3Aopen+label%3A%22hands-on+labs%22)**
 
 ## 🌟 Support This Project
