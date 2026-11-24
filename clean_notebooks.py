@@ -11,7 +11,7 @@ def clean_notebook(path):
         with open(path, "r", encoding="utf-8") as f:
             nb = json.load(f)
     except json.JSONDecodeError as e:
-        print(f"  WARNING JSON invalido, se omite: {path} ({e})")
+        print(f"  WARNING Invalid JSON, skipping: {path} ({e})")
         return
     if "widgets" in nb.get("metadata", {}):
         del nb["metadata"]["widgets"]
@@ -19,23 +19,23 @@ def clean_notebook(path):
             json.dump(nb, f, indent=1, ensure_ascii=False)
             f.write("\\n")
         subprocess.run(["git", "add", path])
-        print(f"  OK metadata.widgets eliminado: {path}")
+        print(f"  OK metadata.widgets removed: {path}")
     else:
-        print(f"  OK Sin cambios necesarios: {path}")
+        print(f"  OK No changes needed: {path}")
 
 def main():
     notebooks = get_staged_notebooks()
     if not notebooks:
         sys.exit(0)
-    print("Limpiando notebooks staged...")
+    print("Cleaning staged notebooks...")
     for nb_path in notebooks:
         clean_notebook(nb_path)
-    print("Listo.")
+    print("Done.")
 
 if __name__ == "__main__":
     main()
 """
 with open("clean_notebooks.py", "w") as f:
     f.write(script)
-print("Archivo actualizado.")
+print("File updated.")
 PYEOF
