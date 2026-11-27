@@ -13,6 +13,7 @@ This directory contains the notebooks for Chapter 12. They explore two practical
 - **LLM**: `meta-llama/Llama-3.2-3B` (unmodified control) and `oopere/llama-3.2-3b-attn-drop-6` (attention removed from 6 of 28 blocks)
 - **Dataset**: N/A (fixed prompt for generation and latency tests)
 - **Description**: Tests whether vLLM can serve the attention-pruned checkpoint. It compares the standard load path with a custom vLLM model class, then checks generation, allocated KV cache, and batch-1 latency against the control. It does not evaluate model quality. The gated control model requires license acceptance and Hugging Face authentication.
+- **Hardware**: Requires an NVIDIA GPU. vLLM is CUDA-only, so this notebook does not run on Apple Silicon Macs (see [Running the notebooks on a Mac](../README.md#-running-the-notebooks-on-a-mac-apple-silicon)).
 
 ### Padding and KV Cache Arithmetic
 

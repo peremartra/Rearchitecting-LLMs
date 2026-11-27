@@ -90,7 +90,7 @@ Teaching with *Rearchitecting LLMs*? A class, a study group or a company reading
 1. **Fork once per cohort.** The instructor forks this repo and enables *Settings → General → Features → Discussions* in the fork. Notebooks keep opening from this repository through the Colab badges, so students always run the latest version.
 2. **Seed the discussions.** In the fork's *Actions* tab, enable workflows and run **Seed cohort discussions** ([direct link](../../actions/workflows/seed_discussions.yml)). It copies the *Hands-on Discussion* of every chapter from CH02 to CH13 (Chapter 1 has none), with the same labels (`CH06`, `hands-on labs`), so you can filter the fork's discussions exactly as in the link above. It is safe to run more than once.
 3. **Students answer inside the thread.** Each student posts one comment following the results template at the end of the discussion (exercise attempted, model, hardware and versions, configurations tried, results, match with the chapter, key insight, link). Numbers that don't match the chapter are as useful as those that do, and failed runs and OOM errors count. Replies are for peer review.
-4. **Hardware.** Most labs run on a free Colab T4. Those needing an L4 or A100 say so in the chapter README, and the Chapter 6 challenge can be explored by changing configuration even without an A100.
+4. **Hardware.** Most labs run on a free Colab T4. Those needing an L4 or A100 say so in the chapter README, and the Chapter 6 challenge can be explored by changing configuration even without an A100. Students with an Apple Silicon Mac can also run most labs locally: see [Running the notebooks on a Mac](#-running-the-notebooks-on-a-mac-apple-silicon).
 
 **Good to know**
 - Enabling Actions in the fork also enables this repository's notebook-cleanup workflow, which amends and force-pushes any push that touches `.ipynb` files. Don't push notebooks to `main`; share them as Colab links or Gists. Once the discussions are seeded, you can disable Actions again in the fork's settings.
@@ -101,6 +101,54 @@ Teaching with *Rearchitecting LLMs*? A class, a study group or a company reading
 **Running a course with this book?** I'd like to hear about it: open a Discussion in the *Courses* category.
 
 **[→ Explore all Hands-on Labs Discussions](https://github.com/peremartra/Rearchitecting-LLMs/discussions?discussions_q=is%3Aopen+label%3A%22hands-on+labs%22)**
+
+## 🍏 Running the notebooks on a Mac (Apple Silicon)
+
+The notebooks are written for Colab GPUs, but they also run locally on Apple Silicon Macs (M1 or newer) through PyTorch's Metal backend (MPS). Every notebook picks its device in the same order: CUDA if available, then Apple Silicon (MPS), then CPU. GPU calls go through PyTorch's device-generic `torch.accelerator` API, so the same code runs unchanged on Colab and on a Mac; this needs PyTorch 2.10 or newer.
+
+**Setup**
+
+```bash
+git clone https://github.com/peremartra/Rearchitecting-LLMs.git
+cd Rearchitecting-LLMs
+python3 -m venv .venv && source .venv/bin/activate
+pip install torch transformers accelerate datasets lm-eval optipfair peft trl \
+    langdetect codecarbon matplotlib seaborn pandas scikit-learn jupyter
+brew install wget            # notebooks download utils.py with !wget
+jupyter lab
+```
+
+Most notebooks pin the versions the book was tested with in their first cell; run it if you want exactly those versions. Llama and Gemma models, and the `Salesforce/xlam-function-calling-60k` dataset used in Chapter 13, are gated on Hugging Face: accept their licences and run `hf auth login` once.
+
+**What to expect**
+
+- macOS 14 (Sonoma) or newer is required for `bfloat16` on MPS.
+- GPU memory is the Mac's unified memory, shared with macOS and your other apps. In `bfloat16` the weights alone take about 2 GB per billion parameters (Qwen3-0.6B ≈ 1.2 GB, SmolLM2-1.7B ≈ 3.4 GB, Llama-3.2-3B ≈ 6.4 GB, Llama-3.1-8B ≈ 16 GB), and distillation notebooks keep a teacher and a student in memory at the same time.
+- Latency, throughput and energy numbers (CH04, CH05, CH08, Appendices C and D) will not match the T4/L4 figures in the book; compare models against each other on the same machine. CodeCarbon (energy) reads real power only when it can run `sudo powermetrics` without a password prompt; otherwise it falls back to an estimate based on the CPU's rated power.
+- `bitsandbytes` 4-bit quantization (CH03, CH07, CH08) works on MPS with the versions the notebooks pin (0.49.2) and newer, and saves the same memory as on CUDA (Llama-3.2-3B: 2.3 GB in 4-bit vs 6.1 GB in fp16). It runs through a generic PyTorch path, though, so generating with a 4-bit model is much slower than on CUDA (under 1 token/s for Llama-3.2-3B).
+- Notebooks whose header says **A100** (CH08 NB04, CH13 NB02/NB03) use batch sizes sized for 40–80 GB of GPU memory. On a Mac with less unified memory, lower the per-step batch and raise gradient accumulation by the same factor, which keeps the effective batch unchanged (for example, in CH13 set `DISTILL_BATCH_SIZE = 1` and `ACCUMULATION_STEPS = 16`).
+
+**Status on Apple Silicon**
+
+Tested on an M2 Max with 32 GB (macOS 26.4, PyTorch 2.15). Training runs were shortened (1 epoch, `lm-eval` limited to 20 examples per task) to check that every cell runs, not to reproduce the book's numbers. Times are for those shortened runs.
+
+| Chapter | Notebooks run end to end on a Mac | Notes |
+|---|---|---|
+| 2 | NB01, NB02 | ~4 min each |
+| 3 | NB01 | Run it with the versions its first cell installs: Phi-4-mini's remote code does not load with transformers 5. Loads Llama-3.1-8B in 4-bit (~20 min) |
+| 4 | NB01 Cosine Similarity | ~16 min |
+| 5 | NB01, NB02, NB03 | NB02's latency and memory sweep takes ~30 min |
+| 6 | NB02 | |
+| 7 | NB02 (L4), up to the QDoRA evaluation | 4-bit QLoRA and QDoRA training work. Generating with the unmerged 4-bit QDoRA model is slow: its evaluation cell did not finish within 40 min |
+| 8 | NB01 (T4), NB03 | NB01's 4-bit cell takes ~13 min (slow 4-bit generation). **NB02 needs an NVIDIA GPU** (vLLM). NB04 (A100) trains a 3B student against a 3B teacher and did not fit in 32 GB even at batch size 2: the Mac swapped heavily and one epoch did not finish in an hour. The Llama-3.1-8B notebooks were not run |
+| 9 | NB01 | |
+| 10 | NB01, NB01 (optipfair) | Under 1 min |
+| 11 | NB01, NB02 | |
+| 12 | NB02 | **NB01 needs an NVIDIA GPU** (vLLM) |
+| 13 | NB01, NB02, NB03, NB04 | NB02/NB03 with `DISTILL_BATCH_SIZE = 1`, `ACCUMULATION_STEPS = 16` on 32 GB |
+| Appendices | B, C, D | D: run-to-run variation at long prompts can be large on a Mac; the notebook's noise-floor check shows when a difference is real |
+
+Notebooks not listed use the same device code as the ones that were run. Reports from Mac users are welcome in the Discussions.
 
 ## 🌟 Support This Project
 
