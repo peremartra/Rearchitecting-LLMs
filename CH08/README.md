@@ -27,12 +27,14 @@ This chapter covers two complementary strategies for reducing the memory and com
 - **LLM**: `meta-llama/Llama-3.2-3B`
 - **Dataset**: N/A (inference benchmark with a fixed long prompt)
 - **Description**: Demonstrates production-grade FP8 KV cache quantization using the vLLM serving engine on a T4 GPU. The notebook runs vLLM in a standalone subprocess to avoid Jupyter stream incompatibilities and compares the number of GPU KV cache blocks and throughput between a standard FP16 cache and an FP8 cache. A single configuration change doubles the number of available KV cache blocks for the same VRAM budget.
+- **Hardware**: Requires an NVIDIA GPU. vLLM is CUDA-only, so this notebook does not run on Apple Silicon Macs (see [Running the notebooks on a Mac](../README.md#-running-the-notebooks-on-a-mac-apple-silicon)).
 
 ### 4. [CH08_NB02_L4_KVCache_vLLM.ipynb](https://github.com/peremartra/Rearchitecting-LLMs/blob/main/CH08/CH08_NB02_L4_KVCache_vLLM.ipynb)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/peremartra/Rearchitecting-LLMs/blob/main/CH08/CH08_NB02_L4_KVCache_vLLM.ipynb) [![nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.org/github/peremartra/Rearchitecting-LLMs/blob/main/CH08/CH08_NB02_L4_KVCache_vLLM.ipynb)
 - **LLM**: `meta-llama/Llama-3.2-3B`
 - **Dataset**: N/A (inference benchmark with a fixed long prompt)
 - **Description**: Repeats the vLLM FP8 KV cache experiment on an L4 GPU. On Ampere hardware, vLLM's FP8 path uses native CUDA kernels, providing a more representative throughput comparison than T4. This notebook serves as the L4 reference for the vLLM section of the chapter.
+- **Hardware**: Requires an NVIDIA GPU. vLLM is CUDA-only, so this notebook does not run on Apple Silicon Macs (see [Running the notebooks on a Mac](../README.md#-running-the-notebooks-on-a-mac-apple-silicon)).
 
 ---
 

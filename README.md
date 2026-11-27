@@ -90,7 +90,7 @@ Teaching with *Rearchitecting LLMs*? A class, a study group or a company reading
 1. **Fork once per cohort.** The instructor forks this repo and enables *Settings → General → Features → Discussions* in the fork. Notebooks keep opening from this repository through the Colab badges, so students always run the latest version.
 2. **Seed the discussions.** In the fork's *Actions* tab, enable workflows and run **Seed cohort discussions** ([direct link](../../actions/workflows/seed_discussions.yml)). It copies the *Hands-on Discussion* of every chapter from CH02 to CH13 (Chapter 1 has none), with the same labels (`CH06`, `hands-on labs`), so you can filter the fork's discussions exactly as in the link above. It is safe to run more than once.
 3. **Students answer inside the thread.** Each student posts one comment following the results template at the end of the discussion (exercise attempted, model, hardware and versions, configurations tried, results, match with the chapter, key insight, link). Numbers that don't match the chapter are as useful as those that do, and failed runs and OOM errors count. Replies are for peer review.
-4. **Hardware.** Most labs run on a free Colab T4. Those needing an L4 or A100 say so in the chapter README, and the Chapter 6 challenge can be explored by changing configuration even without an A100.
+4. **Hardware.** Most labs run on a free Colab T4. Those needing an L4 or A100 say so in the chapter README, and the Chapter 6 challenge can be explored by changing configuration even without an A100. Students with an Apple Silicon Mac can also run most labs locally: see [Running the notebooks on a Mac](#-running-the-notebooks-on-a-mac-apple-silicon).
 
 **Good to know**
 - Enabling Actions in the fork also enables this repository's notebook-cleanup workflow, which amends and force-pushes any push that touches `.ipynb` files. Don't push notebooks to `main`; share them as Colab links or Gists. Once the discussions are seeded, you can disable Actions again in the fork's settings.
@@ -101,6 +101,50 @@ Teaching with *Rearchitecting LLMs*? A class, a study group or a company reading
 **Running a course with this book?** I'd like to hear about it: open a Discussion in the *Courses* category.
 
 **[→ Explore all Hands-on Labs Discussions](https://github.com/peremartra/Rearchitecting-LLMs/discussions?discussions_q=is%3Aopen+label%3A%22hands-on+labs%22)**
+
+## 🍏 Running the notebooks on a Mac (Apple Silicon)
+
+The notebooks are written for Colab GPUs, but they also run locally on Apple Silicon Macs (M1 or newer) through PyTorch's Metal backend (MPS). Every notebook picks its device in the same order: CUDA if available, then Apple Silicon (MPS), then CPU. `utils.py` follows the same rule, and you can force a device by setting `OPTIPFAIR_DEVICE=cpu|mps|cuda` (the same variable used by the [optipfair](https://github.com/peremartra/optipfair) library).
+
+**Setup**
+
+```bash
+git clone https://github.com/peremartra/Rearchitecting-LLMs.git
+cd Rearchitecting-LLMs
+python3 -m venv .venv && source .venv/bin/activate
+pip install torch transformers accelerate datasets lm-eval optipfair peft trl \
+    langdetect codecarbon matplotlib seaborn pandas scikit-learn jupyter
+brew install wget            # notebooks download utils.py with !wget
+jupyter lab
+```
+
+Most notebooks pin the versions the book was tested with in their first cell; run it if you want exactly those versions. Llama and Gemma models, and the `Salesforce/xlam-function-calling-60k` dataset used in Chapter 13, are gated on Hugging Face: accept their licences and run `hf auth login` once.
+
+**What to expect**
+
+- macOS 14 (Sonoma) or newer is required for `bfloat16` on MPS.
+- GPU memory is the Mac's unified memory, shared with macOS and your other apps. In `bfloat16` the weights alone take about 2 GB per billion parameters (Qwen3-0.6B ≈ 1.2 GB, SmolLM2-1.7B ≈ 3.4 GB, Llama-3.2-3B ≈ 6.4 GB, Llama-3.1-8B ≈ 16 GB), and distillation notebooks keep a teacher and a student in memory at the same time.
+- Latency, throughput and energy numbers (CH04, CH05, CH08, Appendices C and D) will not match the T4/L4 figures in the book; compare models against each other on the same machine. CodeCarbon (energy) reads real power only when it can run `sudo powermetrics` without a password prompt; otherwise it falls back to an estimate based on the CPU's rated power.
+- `bitsandbytes` 4-bit quantization (CH03, CH07, CH08) works on MPS with the versions the notebooks pin (0.49.2) and newer.
+
+**Status on Apple Silicon**
+
+Tested on an M2 Max (macOS 26.4, PyTorch 2.15). Training runs were shortened (1 epoch, `lm-eval` limited to 20 examples per task) to check that every cell runs, not to reproduce the book's numbers.
+
+| Chapter | Status on a Mac | Notes |
+|---|---|---|
+| 2, 3, 5, 10, 11 | Ported, not yet tested | Use gated Llama or Gemma models |
+| 4 | Tested: `CH04_NB01_Cosine_Similarity` | Layer importance, depth pruning, recovery, benchmarks and timing (~16 min) |
+| 6 | Tested: `CH06_NB02_Width_Pruned_Model_Recovery` | Width pruning and distillation with all four loss terms (~8 min) |
+| 7 | Tested: `CH07_NB02_L4_QLoRA_QDoRA` | 4-bit QLoRA and QDoRA training both work; evaluating the QDoRA adapter is slow (more than 40 min) |
+| 8 | NB01: 4-bit KV cache checked with Qwen3-0.6B. **NB02: NVIDIA only** (vLLM) | NB03/NB04 use Llama-3.2-3B / 3.1-8B (gated; 8B needs 32 GB+) |
+| 9 | Tested: `CH09_NB01_MoE` | fp16 mixed-precision router and expert training (~23 min) |
+| 12 | **NB01: NVIDIA only** (vLLM). NB02 is pure Python | |
+| 13 | Ported, not yet tested | Gated `Salesforce/xlam-function-calling-60k` dataset |
+| Appendix B, C | Ported, not yet tested | Use gated `google/gemma-3-270m` |
+| Appendix D | Tested: `APPD_NB01_examples` | ~10 min. On a Mac, run-to-run variation at long prompts can be large; the notebook's noise-floor check shows when a difference is real |
+
+"Ported, not yet tested" notebooks use the same device changes as the tested ones. Reports from Mac users are welcome in the Discussions.
 
 ## 🌟 Support This Project
 
