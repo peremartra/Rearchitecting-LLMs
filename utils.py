@@ -9,7 +9,6 @@ except Exception:
 import torch
 import json
 import gc
-import os
 import langdetect
 import time
 from tqdm import tqdm
@@ -22,66 +21,10 @@ import codecarbon
 #        "  pip install optipfair lm-eval transformers torch langdetect"
 #    )
 
-# ---------------------------------------------------------------------------
-# Device helpers: NVIDIA GPUs (CUDA), Apple Silicon GPUs (MPS / Metal) or CPU.
-# Set OPTIPFAIR_DEVICE=cpu|mps|cuda to override the automatic choice (the same
-# variable is honoured by the optipfair library).
-# ---------------------------------------------------------------------------
-
-def is_mps_available():
-    """True on Apple Silicon Macs with an MPS-enabled PyTorch build."""
-    return hasattr(torch.backends, "mps") and torch.backends.mps.is_available()
-
-
-def get_device(device=None):
-    """
-    Returns the torch.device to use: CUDA, then Apple Silicon (MPS), then CPU.
-
-    Args:
-        device: None/"auto" for automatic selection (honours OPTIPFAIR_DEVICE),
-            or an explicit device such as "cuda", "mps" or "cpu".
-    """
-    if device is None or str(device).lower() == "auto":
-        device = os.environ.get("OPTIPFAIR_DEVICE", "auto").strip().lower() or "auto"
-    if device != "auto":
-        return torch.device(device)
-    if torch.cuda.is_available():
-        return torch.device("cuda")
-    if is_mps_available():
-        return torch.device("mps")
-    return torch.device("cpu")
-
-
-def _device_type(device):
-    return torch.device(device).type if device is not None else None
-
-
-def synchronize(device=None):
-    """Waits for queued GPU work (CUDA or MPS). Needed before reading a timer."""
-    device_type = _device_type(device)
-    if device_type in (None, "cuda") and torch.cuda.is_available():
-        torch.cuda.synchronize()
-    if device_type in (None, "mps") and is_mps_available():
-        torch.mps.synchronize()
-
-
-def empty_cache(device=None):
-    """Releases cached allocator memory on CUDA or MPS."""
-    device_type = _device_type(device)
-    if device_type in (None, "cuda") and torch.cuda.is_available():
-        torch.cuda.empty_cache()
-    if device_type in (None, "mps") and is_mps_available():
-        torch.mps.empty_cache()
-
-
-def _model_device(model):
-    return next(model.parameters()).device
-
-
 def clear_gpu_cache():
-    """Clear GPU cache completely (CUDA or Apple Silicon MPS)"""
-    empty_cache()
-    synchronize()
+    """Clear GPU cache completely"""
+    torch.accelerator.empty_cache()
+    torch.accelerator.synchronize()
     gc.collect()
 
 def _left_trim_batch(batch, pad_token_id):
@@ -193,7 +136,7 @@ def measure_detailed_performance(model, tokenizer, data_source, num_runs=3, max_
                 do_sample=False,
                 pad_token_id=tokenizer.pad_token_id
             )
-    synchronize(device)  # Ensure warmup completed
+    torch.accelerator.synchronize()  # Ensure warmup completed
 
     # --- 3. MEASUREMENT LOOP ---
     latencies = [] # Stores latency per generation call (batch latency)
@@ -211,7 +154,7 @@ def measure_detailed_performance(model, tokenizer, data_source, num_runs=3, max_
 
             for _ in range(num_runs):
                 # Synchronize before starting the clock (Vital for precision)
-                synchronize(device)
+                torch.accelerator.synchronize()
                 
                 start_time = time.perf_counter()
                 
@@ -225,7 +168,7 @@ def measure_detailed_performance(model, tokenizer, data_source, num_runs=3, max_
                 )
                 
                 # Synchronize before stopping the clock
-                synchronize(device)
+                torch.accelerator.synchronize()
                 end_time = time.perf_counter()
 
                 # Calculations
@@ -286,7 +229,7 @@ def model_evaluation(model_obj, tokenizer, tasks, device=None, limit=None, batch
         tasks (list[str | dict]): A list of tasks. Can be task name strings or 
             dicts with keys 'name' (str) and 'num_fewshot' (int).
         device (str): Device to run evaluation on (e.g., 'cuda', 'mps', 'cpu'). 
-            Defaults to the device the model is already on.
+            Defaults to the device the model is on.
         limit (int, optional): Number of samples per task for quick testing. 
             If None, the full dataset is used.
         batch_size (int): Batch size for the evaluator. Defaults to 4.
@@ -305,14 +248,11 @@ def model_evaluation(model_obj, tokenizer, tasks, device=None, limit=None, batch
     from lm_eval.models.huggingface import HFLM
     from collections import defaultdict
     
-    if device is None:
-        device = _model_device(model_obj)
-
     # Wrap the local model object and tokenizer for lm-eval
     model_wrapper = HFLM(
         pretrained=model_obj,
         tokenizer=tokenizer,
-        device=str(device)
+        device=str(device or model_obj.device)
     )
     
     # Parse tasks and group by num_fewshot for efficient evaluation
@@ -345,7 +285,7 @@ def model_evaluation(model_obj, tokenizer, tasks, device=None, limit=None, batch
             tasks=task_list,
             num_fewshot=num_fewshot,
             limit=limit,
-            device=str(device),
+            device=str(device or model_obj.device),
             batch_size=batch_size,
         )
         all_results.update(results["results"])
@@ -396,16 +336,15 @@ def evaluate_metrics(model, dataloader, device=None):
         model (torch.nn.Module): The language model to be evaluated.
         dataloader (torch.utils.data.DataLoader): The validation or test data loader.
         device (str, optional): The device to run the evaluation on (e.g., 'cuda', 'mps', 'cpu'). 
-            Defaults to the device the model is already on.
+            Defaults to the device the model is on.
 
     Returns:
         dict: A dictionary containing the evaluation results:
             - 'loss' (float): The average cross-entropy loss per token.
             - 'perplexity' (float): The model's perplexity score.
     """
-    if device is None:
-        device = _model_device(model)
     model.eval()
+    device = device or model.device
     model.to(device)
 
     total_loss = 0
@@ -443,10 +382,8 @@ def evaluate_metrics(model, dataloader, device=None):
     }
 
 def generate_text(model, tokenizer, prompt: str, device=None, max_new_tokens: int = 50) -> str:
-    """Generate text with the model (on the model's device unless `device` is given)"""
-    if device is None:
-        device = _model_device(model)
-    inputs = tokenizer(prompt, return_tensors='pt').to(device)
+    """Generate text with the model"""
+    inputs = tokenizer(prompt, return_tensors='pt').to(device or model.device)
     with torch.no_grad():
         outputs = model.generate(
             inputs['input_ids'],
@@ -461,15 +398,14 @@ def generate_text(model, tokenizer, prompt: str, device=None, max_new_tokens: in
         )
     return tokenizer.decode(outputs[0], skip_special_tokens=True)
     
-def calibrate_idle_power(device=None, duration_seconds=30, verbose=True):
+def calibrate_idle_power(device="cuda", duration_seconds=30, verbose=True):
     """
     Measure GPU idle power consumption to establish baseline.
     
     This should be run ONCE at the start of the notebook, before any model loading.
     
     Args:
-        device (str | torch.device): Device to calibrate ("cuda", "mps" or "cpu").
-            Defaults to get_device().
+        device (str): Device to calibrate ("cuda" or "cpu")
         duration_seconds (int): How long to measure (30s recommended)
         verbose (bool): Print progress messages
     
@@ -492,11 +428,9 @@ def calibrate_idle_power(device=None, duration_seconds=30, verbose=True):
         print(f"🔋 Starting idle power calibration ({duration_seconds}s)...")
         print(f"   Clearing GPU cache...")
     
-    device = get_device(device)
-
     # Clear GPU to true idle state
-    empty_cache(device)
-    synchronize(device)
+    torch.accelerator.empty_cache()
+    torch.accelerator.synchronize()
     
     # Initialize tracker
     tracker = EmissionsTracker(
@@ -527,7 +461,7 @@ def calibrate_idle_power(device=None, duration_seconds=30, verbose=True):
     
     # Capture GPU state
     gpu_info = {}
-    if device.type == "cuda":
+    if torch.device(device).type == "cuda" and torch.cuda.is_available():
         gpu_info = {
             "gpu_name": torch.cuda.get_device_name(0),
             "gpu_temp_celsius": torch.cuda.temperature() if hasattr(torch.cuda, 'temperature') else None,
@@ -649,7 +583,7 @@ def measure_energy_consumption(model, tokenizer, data_source, idle_power_watts=N
                 do_sample=False,
                 pad_token_id=tokenizer.pad_token_id
             )
-    synchronize(device)  # Ensure warmup completed
+    torch.accelerator.synchronize()  # Ensure warmup completed
 
     # --- 4. INITIALIZE ENERGY TRACKER ---
     # save_to_file=False keeps the environment clean for the book reader
@@ -674,7 +608,7 @@ def measure_energy_consumption(model, tokenizer, data_source, idle_power_watts=N
 
                 for _ in range(num_runs):
                     # Synchronize before starting generation (Vital for precision)
-                    synchronize(device)
+                    torch.accelerator.synchronize()
                     
                     outputs = model.generate(
                         input_ids,
@@ -685,7 +619,7 @@ def measure_energy_consumption(model, tokenizer, data_source, idle_power_watts=N
                     )
                     
                     # Synchronize after generation
-                    synchronize(device)
+                    torch.accelerator.synchronize()
 
                     # Count only NEW tokens for efficiency calculation
                     num_new_tokens = outputs.shape[1] - input_ids.shape[1]
@@ -754,22 +688,6 @@ def get_output(model, tokenizer, prompt, max_new_tokens=100):
     )
 
 
-class _MPSPeakMemory(transformers.StoppingCriteria):
-    """
-    Records peak MPS memory during generate(). MPS has no peak-memory counter
-    (unlike torch.cuda.max_memory_allocated), so allocated memory is sampled
-    after every decoding step, while the KV cache is alive. Never stops generation.
-    """
-
-    def __init__(self):
-        self.start_bytes = torch.mps.current_allocated_memory()
-        self.peak_bytes = self.start_bytes
-
-    def __call__(self, input_ids, scores, **kwargs):
-        self.peak_bytes = max(self.peak_bytes, torch.mps.current_allocated_memory())
-        return torch.zeros(input_ids.shape[0], dtype=torch.bool, device=input_ids.device)
-
-
 def measure_memory_allocation(model, tokenizer, prompt, max_new_tokens=100, cache_config=None, cache_implementation=None):
     """
     Measures static VRAM, dynamic VRAM delta, and throughput for a generation run.
@@ -799,18 +717,13 @@ def measure_memory_allocation(model, tokenizer, prompt, max_new_tokens=100, cach
     input_len = inputs["input_ids"].shape[1]
 
     # Settle memory and reset peak tracker so the delta is clean
-    synchronize(device)
-    mps_peak = None
-    if device.type == "cuda":
-        torch.cuda.reset_peak_memory_stats()
-        static_vram = torch.cuda.memory_allocated() / (1024 ** 2)
-    elif device.type == "mps":
-        # Weights loaded with device_map="auto" bypass the MPS caching allocator, so
-        # current_allocated_memory() misses them; the driver total (after releasing
-        # cached blocks) is the process-wide footprint, like CUDA's memory_allocated().
-        torch.mps.empty_cache()
-        static_vram = torch.mps.driver_allocated_memory() / (1024 ** 2)
-        mps_peak = _MPSPeakMemory()
+    if torch.accelerator.is_available():
+        torch.accelerator.synchronize()
+        torch.accelerator.reset_peak_memory_stats()
+        allocated = torch.accelerator.memory_allocated()
+        # On Apple Silicon, weights loaded by recent transformers versions can sit outside
+        # the allocator's count, so never report less than the model's own weights.
+        static_vram = max(allocated, model.get_memory_footprint()) / (1024 ** 2)
     else:
         static_vram = 0.0
 
@@ -824,19 +737,15 @@ def measure_memory_allocation(model, tokenizer, prompt, max_new_tokens=100, cach
         generate_kwargs["cache_config"] = cache_config
     if cache_implementation is not None:
         generate_kwargs["cache_implementation"] = cache_implementation
-    if mps_peak is not None:
-        generate_kwargs["stopping_criteria"] = transformers.StoppingCriteriaList([mps_peak])
 
     start_time = time.time()
     with torch.no_grad():
         outputs = model.generate(**generate_kwargs)
-    synchronize(device)
+    torch.accelerator.synchronize()
     elapsed = time.time() - start_time
 
-    if device.type == "cuda":
-        peak_vram = torch.cuda.max_memory_allocated() / (1024 ** 2)
-    elif mps_peak is not None:
-        peak_vram = static_vram + (mps_peak.peak_bytes - mps_peak.start_bytes) / (1024 ** 2)
+    if torch.accelerator.is_available():
+        peak_vram = static_vram + (torch.accelerator.max_memory_allocated() - allocated) / (1024 ** 2)
     else:
         peak_vram = 0.0
 
