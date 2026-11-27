@@ -104,7 +104,7 @@ Teaching with *Rearchitecting LLMs*? A class, a study group or a company reading
 
 ## 🍏 Running the notebooks on a Mac (Apple Silicon)
 
-The notebooks are written for Colab GPUs, but they also run locally on Apple Silicon Macs (M1 or newer) through PyTorch's Metal backend (MPS). Every notebook picks its device in the same order: CUDA if available, then Apple Silicon (MPS), then CPU. `utils.py` follows the same rule, and you can force a device by setting `OPTIPFAIR_DEVICE=cpu|mps|cuda` (the same variable used by the [optipfair](https://github.com/peremartra/optipfair) library).
+The notebooks are written for Colab GPUs, but they also run locally on Apple Silicon Macs (M1 or newer) through PyTorch's Metal backend (MPS). Every notebook picks its device in the same order: CUDA if available, then Apple Silicon (MPS), then CPU. GPU calls go through PyTorch's device-generic `torch.accelerator` API, so the same code runs unchanged on Colab and on a Mac; this needs PyTorch 2.10 or newer.
 
 **Setup**
 
@@ -125,26 +125,30 @@ Most notebooks pin the versions the book was tested with in their first cell; ru
 - macOS 14 (Sonoma) or newer is required for `bfloat16` on MPS.
 - GPU memory is the Mac's unified memory, shared with macOS and your other apps. In `bfloat16` the weights alone take about 2 GB per billion parameters (Qwen3-0.6B ≈ 1.2 GB, SmolLM2-1.7B ≈ 3.4 GB, Llama-3.2-3B ≈ 6.4 GB, Llama-3.1-8B ≈ 16 GB), and distillation notebooks keep a teacher and a student in memory at the same time.
 - Latency, throughput and energy numbers (CH04, CH05, CH08, Appendices C and D) will not match the T4/L4 figures in the book; compare models against each other on the same machine. CodeCarbon (energy) reads real power only when it can run `sudo powermetrics` without a password prompt; otherwise it falls back to an estimate based on the CPU's rated power.
-- `bitsandbytes` 4-bit quantization (CH03, CH07, CH08) works on MPS with the versions the notebooks pin (0.49.2) and newer.
+- `bitsandbytes` 4-bit quantization (CH03, CH07, CH08) works on MPS with the versions the notebooks pin (0.49.2) and newer, and saves the same memory as on CUDA (Llama-3.2-3B: 2.3 GB in 4-bit vs 6.1 GB in fp16). It runs through a generic PyTorch path, though, so generating with a 4-bit model is much slower than on CUDA (under 1 token/s for Llama-3.2-3B).
+- Notebooks whose header says **A100** (CH08 NB04, CH13 NB02/NB03) use batch sizes sized for 40–80 GB of GPU memory. On a Mac with less unified memory, lower the per-step batch and raise gradient accumulation by the same factor, which keeps the effective batch unchanged (for example, in CH13 set `DISTILL_BATCH_SIZE = 1` and `ACCUMULATION_STEPS = 16`).
 
 **Status on Apple Silicon**
 
-Tested on an M2 Max (macOS 26.4, PyTorch 2.15). Training runs were shortened (1 epoch, `lm-eval` limited to 20 examples per task) to check that every cell runs, not to reproduce the book's numbers.
+Tested on an M2 Max with 32 GB (macOS 26.4, PyTorch 2.15). Training runs were shortened (1 epoch, `lm-eval` limited to 20 examples per task) to check that every cell runs, not to reproduce the book's numbers. Times are for those shortened runs.
 
-| Chapter | Status on a Mac | Notes |
+| Chapter | Notebooks run end to end on a Mac | Notes |
 |---|---|---|
-| 2, 3, 5, 10, 11 | Ported, not yet tested | Use gated Llama or Gemma models |
-| 4 | Tested: `CH04_NB01_Cosine_Similarity` | Layer importance, depth pruning, recovery, benchmarks and timing (~16 min) |
-| 6 | Tested: `CH06_NB02_Width_Pruned_Model_Recovery` | Width pruning and distillation with all four loss terms (~8 min) |
-| 7 | Tested: `CH07_NB02_L4_QLoRA_QDoRA` | 4-bit QLoRA and QDoRA training both work; evaluating the QDoRA adapter is slow (more than 40 min) |
-| 8 | NB01: 4-bit KV cache checked with Qwen3-0.6B. **NB02: NVIDIA only** (vLLM) | NB03/NB04 use Llama-3.2-3B / 3.1-8B (gated; 8B needs 32 GB+) |
-| 9 | Tested: `CH09_NB01_MoE` | fp16 mixed-precision router and expert training (~23 min) |
-| 12 | **NB01: NVIDIA only** (vLLM). NB02 is pure Python | |
-| 13 | Ported, not yet tested | Gated `Salesforce/xlam-function-calling-60k` dataset |
-| Appendix B, C | Ported, not yet tested | Use gated `google/gemma-3-270m` |
-| Appendix D | Tested: `APPD_NB01_examples` | ~10 min. On a Mac, run-to-run variation at long prompts can be large; the notebook's noise-floor check shows when a difference is real |
+| 2 | NB01, NB02 | ~4 min each |
+| 3 | NB01 | Run it with the versions its first cell installs: Phi-4-mini's remote code does not load with transformers 5. Loads Llama-3.1-8B in 4-bit (~20 min) |
+| 4 | NB01 Cosine Similarity | ~16 min |
+| 5 | NB01, NB02, NB03 | NB02's latency and memory sweep takes ~30 min |
+| 6 | NB02 | |
+| 7 | NB02 (L4), up to the QDoRA evaluation | 4-bit QLoRA and QDoRA training work. Generating with the unmerged 4-bit QDoRA model is slow: its evaluation cell did not finish within 40 min |
+| 8 | NB01 (T4), NB03 | NB01's 4-bit cell takes ~13 min (slow 4-bit generation). **NB02 needs an NVIDIA GPU** (vLLM). NB04 (A100) trains a 3B student against a 3B teacher and did not fit in 32 GB even at batch size 2: the Mac swapped heavily and one epoch did not finish in an hour. The Llama-3.1-8B notebooks were not run |
+| 9 | NB01 | |
+| 10 | NB01, NB01 (optipfair) | Under 1 min |
+| 11 | NB01, NB02 | |
+| 12 | NB02 | **NB01 needs an NVIDIA GPU** (vLLM) |
+| 13 | NB01, NB02, NB03, NB04 | NB02/NB03 with `DISTILL_BATCH_SIZE = 1`, `ACCUMULATION_STEPS = 16` on 32 GB |
+| Appendices | B, C, D | D: run-to-run variation at long prompts can be large on a Mac; the notebook's noise-floor check shows when a difference is real |
 
-"Ported, not yet tested" notebooks use the same device changes as the tested ones. Reports from Mac users are welcome in the Discussions.
+Notebooks not listed use the same device code as the ones that were run. Reports from Mac users are welcome in the Discussions.
 
 ## 🌟 Support This Project
 
